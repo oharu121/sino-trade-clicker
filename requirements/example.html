@@ -1,0 +1,702 @@
+<html
+  lang="zh-TW"
+  style="--vsc-domain: 'url-clicking-bot-2tcg63aysa-de.a.run.app'"
+>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>URL點擊機器人 🤖 | 自動訪問網址工具</title>
+    <meta
+      name="description"
+      content="強大的網址自動訪問工具，支援自訂訪問次數、間隔時間與並行處理。適用於網站測試、流量生成與效能監控。"
+    />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://url-clicking-bot.run.app/" />
+    <meta property="og:title" content="URL點擊機器人 🤖 | 智能網址訪問工具" />
+    <meta
+      property="og:description"
+      content="自動訪問指定網址的智能工具 ✨ 支援自訂次數、間隔與並行處理 | 即時統計與進度追蹤"
+    />
+    <meta
+      property="og:image"
+      content="https://url-clicking-bot.run.app/og-image.png"
+    />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:locale" content="zh_TW" />
+    <meta property="og:site_name" content="URL點擊機器人" />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content="https://url-clicking-bot.run.app/" />
+    <meta name="twitter:title" content="URL點擊機器人 🤖 | 智能網址訪問工具" />
+    <meta
+      name="twitter:description"
+      content="自動訪問指定網址的智能工具 ✨ 支援自訂次數、間隔與並行處理"
+    />
+    <meta
+      name="twitter:image"
+      content="https://url-clicking-bot.run.app/og-image.png"
+    />
+
+    <!-- Additional Meta Tags -->
+    <meta
+      name="keywords"
+      content="網址點擊機器人,自動訪問,網站測試,流量生成,URL bot,網頁自動化"
+    />
+    <meta name="author" content="URL Clicking Bot" />
+    <meta name="theme-color" content="#6366f1" />
+
+    <!-- Favicon -->
+    <link
+      rel="icon"
+      type="image/svg+xml"
+      href="data:image/svg+xml,&lt;svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'&gt;&lt;text y='.9em' font-size='90'&gt;🤖&lt;/text&gt;&lt;/svg&gt;"
+    />
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      :root {
+        --primary: #6366f1;
+        --primary-dark: #4f46e5;
+        --secondary: #8b5cf6;
+        --success: #10b981;
+        --error: #ef4444;
+        --warning: #f59e0b;
+        --bg: #0f172a;
+        --surface: #1e293b;
+        --surface-light: #334155;
+        --text: #f1f5f9;
+        --text-dim: #94a3b8;
+        --border: #334155;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto",
+          "Oxygen", "Ubuntu", sans-serif;
+        background: linear-gradient(135deg, var(--bg) 0%, #1a1f3a 100%);
+        color: var(--text);
+        min-height: 100vh;
+        padding: 20px;
+        line-height: 1.6;
+      }
+
+      .container {
+        max-width: 600px;
+        margin: 0 auto;
+      }
+
+      header {
+        text-align: center;
+        margin-bottom: 40px;
+        animation: fadeInDown 0.6s ease;
+      }
+
+      h1 {
+        font-size: 2rem;
+        margin-bottom: 10px;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .subtitle {
+        color: var(--text-dim);
+        font-size: 0.95rem;
+      }
+
+      .card {
+        background: var(--surface);
+        border-radius: 20px;
+        padding: 30px;
+        margin-bottom: 20px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        border: 1px solid var(--border);
+        animation: fadeInUp 0.6s ease;
+      }
+
+      .form-group {
+        margin-bottom: 24px;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 8px;
+        color: var(--text);
+        font-weight: 600;
+        font-size: 0.9rem;
+      }
+
+      input[type="text"],
+      input[type="number"] {
+        width: 100%;
+        padding: 14px 16px;
+        border: 2px solid var(--border);
+        border-radius: 12px;
+        background: var(--bg);
+        color: var(--text);
+        font-size: 1rem;
+        transition: all 0.3s ease;
+      }
+
+      input:focus {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+      }
+
+      .toggle-group {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 16px;
+        background: var(--bg);
+        border-radius: 12px;
+        margin-bottom: 12px;
+      }
+
+      .toggle-label {
+        font-size: 0.9rem;
+        color: var(--text);
+      }
+
+      .toggle {
+        position: relative;
+        width: 52px;
+        height: 28px;
+      }
+
+      .toggle input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+      }
+
+      .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: var(--surface-light);
+        transition: 0.3s;
+        border-radius: 28px;
+      }
+
+      .slider:before {
+        position: absolute;
+        content: "";
+        height: 20px;
+        width: 20px;
+        left: 4px;
+        bottom: 4px;
+        background-color: white;
+        transition: 0.3s;
+        border-radius: 50%;
+      }
+
+      input:checked + .slider {
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+      }
+
+      input:checked + .slider:before {
+        transform: translateX(24px);
+      }
+
+      .advanced-options {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease;
+      }
+
+      .advanced-options.show {
+        max-height: 500px;
+      }
+
+      .btn {
+        width: 100%;
+        padding: 16px;
+        border: none;
+        border-radius: 12px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      .btn-primary {
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        color: white;
+        box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+      }
+
+      .btn-primary:hover:not(:disabled) {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(99, 102, 241, 0.6);
+      }
+
+      .btn-primary:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+
+      .progress-section {
+        display: none;
+      }
+
+      .progress-section.show {
+        display: block;
+      }
+
+      .progress-bar-container {
+        width: 100%;
+        height: 8px;
+        background: var(--bg);
+        border-radius: 8px;
+        overflow: hidden;
+        margin-bottom: 20px;
+      }
+
+      .progress-bar {
+        height: 100%;
+        background: linear-gradient(90deg, var(--primary), var(--secondary));
+        transition: width 0.3s ease;
+        border-radius: 8px;
+      }
+
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+        margin-bottom: 20px;
+      }
+
+      .stat-card {
+        background: var(--bg);
+        padding: 16px;
+        border-radius: 12px;
+        text-align: center;
+      }
+
+      .stat-value {
+        font-size: 1.8rem;
+        font-weight: bold;
+        margin-bottom: 4px;
+      }
+
+      .stat-label {
+        font-size: 0.85rem;
+        color: var(--text-dim);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      .success {
+        color: var(--success);
+      }
+      .error {
+        color: var(--error);
+      }
+      .warning {
+        color: var(--warning);
+      }
+      .primary {
+        color: var(--primary);
+      }
+
+      .activity-log {
+        background: var(--bg);
+        border-radius: 12px;
+        padding: 16px;
+        max-height: 200px;
+        overflow-y: auto;
+        font-family: "Courier New", monospace;
+        font-size: 0.85rem;
+      }
+
+      .log-entry {
+        padding: 8px;
+        margin-bottom: 4px;
+        border-left: 3px solid var(--primary);
+        padding-left: 12px;
+      }
+
+      .log-entry.success {
+        border-left-color: var(--success);
+      }
+
+      .log-entry.error {
+        border-left-color: var(--error);
+      }
+
+      @keyframes fadeInDown {
+        from {
+          opacity: 0;
+          transform: translateY(-20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      .spinner {
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        border: 3px solid rgba(255, 255, 255, 0.3);
+        border-radius: 50%;
+        border-top-color: white;
+        animation: spin 0.8s linear infinite;
+        margin-right: 10px;
+      }
+
+      .info-box {
+        background: rgba(99, 102, 241, 0.1);
+        border: 1px solid rgba(99, 102, 241, 0.3);
+        border-radius: 12px;
+        padding: 16px;
+        margin-bottom: 20px;
+        font-size: 0.9rem;
+        color: var(--text-dim);
+      }
+
+      @media (max-width: 640px) {
+        body {
+          padding: 15px;
+        }
+
+        h1 {
+          font-size: 1.75rem;
+        }
+
+        .card {
+          padding: 20px;
+        }
+
+        .stats-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1>🤖 URL點擊機器人</h1>
+        <p class="subtitle">自動訪問指定網址的智能工具</p>
+      </header>
+
+      <div class="card">
+        <form id="clickForm">
+          <div class="form-group">
+            <label for="url">🔗 目標網址</label>
+            <input
+              type="text"
+              id="url"
+              name="url"
+              placeholder="https://example.com"
+              required=""
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="count">🔢 訪問次數（1-10000）</label>
+            <input
+              type="number"
+              id="count"
+              name="count"
+              min="1"
+              max="10000"
+              value="10"
+              required=""
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="interval">⏱️ 訪問間隔（秒）</label>
+            <input
+              type="number"
+              id="interval"
+              name="interval"
+              min="0.1"
+              max="60"
+              step="0.1"
+              value="1.0"
+              required=""
+            />
+          </div>
+
+          <div class="toggle-group">
+            <span class="toggle-label">🎭 隨機 User-Agent</span>
+            <label class="toggle">
+              <input type="checkbox" id="randomizeUserAgent" checked="" />
+              <span class="slider"></span>
+            </label>
+          </div>
+
+          <div class="toggle-group">
+            <span class="toggle-label">⚡ 並行處理</span>
+            <label class="toggle">
+              <input type="checkbox" id="parallel" />
+              <span class="slider"></span>
+            </label>
+          </div>
+
+          <div class="advanced-options" id="parallelOptions">
+            <div class="form-group">
+              <label for="maxWorkers">🔧 最大工作執行緒數（1-20）</label>
+              <input
+                type="number"
+                id="maxWorkers"
+                name="maxWorkers"
+                min="1"
+                max="20"
+                value="5"
+              />
+            </div>
+          </div>
+
+          <div class="info-box">
+            💡
+            <strong>提示：</strong>啟用並行處理可提高速度，但會增加伺服器負載。
+          </div>
+
+          <button type="submit" class="btn btn-primary" id="startBtn">
+            🚀 開始執行
+          </button>
+        </form>
+      </div>
+
+      <div class="card progress-section" id="progressSection">
+        <h3 style="margin-bottom: 20px">📊 執行狀態</h3>
+
+        <div class="progress-bar-container">
+          <div class="progress-bar" id="progressBar" style="width: 0%"></div>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-value primary" id="currentCount">0</div>
+            <div class="stat-label">進行中</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value success" id="successCount">0</div>
+            <div class="stat-label">成功</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value error" id="failedCount">0</div>
+            <div class="stat-label">失敗</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value warning" id="avgResponseTime">0ms</div>
+            <div class="stat-label">平均回應時間</div>
+          </div>
+        </div>
+
+        <h4 style="margin-bottom: 12px; color: var(--text-dim)">📝 活動記錄</h4>
+        <div class="activity-log" id="activityLog"></div>
+      </div>
+    </div>
+
+    <script>
+      const form = document.getElementById("clickForm");
+      const startBtn = document.getElementById("startBtn");
+      const progressSection = document.getElementById("progressSection");
+      const progressBar = document.getElementById("progressBar");
+      const currentCount = document.getElementById("currentCount");
+      const successCount = document.getElementById("successCount");
+      const failedCount = document.getElementById("failedCount");
+      const avgResponseTime = document.getElementById("avgResponseTime");
+      const activityLog = document.getElementById("activityLog");
+      const parallelCheckbox = document.getElementById("parallel");
+      const parallelOptions = document.getElementById("parallelOptions");
+
+      // 並列処理オプションの表示切替
+      parallelCheckbox.addEventListener("change", (e) => {
+        if (e.target.checked) {
+          parallelOptions.classList.add("show");
+        } else {
+          parallelOptions.classList.remove("show");
+        }
+      });
+
+      function addLogEntry(message, type = "info") {
+        const entry = document.createElement("div");
+        entry.className = `log-entry ${type}`;
+        const timestamp = new Date().toLocaleTimeString("ja-JP");
+        entry.textContent = `[${timestamp}] ${message}`;
+        activityLog.insertBefore(entry, activityLog.firstChild);
+
+        // ログが多くなりすぎないように制限
+        if (activityLog.children.length > 50) {
+          activityLog.removeChild(activityLog.lastChild);
+        }
+      }
+
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const url = document.getElementById("url").value;
+        const count = parseInt(document.getElementById("count").value);
+        const interval = parseFloat(document.getElementById("interval").value);
+        const randomizeUserAgent =
+          document.getElementById("randomizeUserAgent").checked;
+        const parallel = parallelCheckbox.checked;
+        const maxWorkers = parseInt(
+          document.getElementById("maxWorkers").value
+        );
+
+        // UIをリセット
+        progressSection.classList.add("show");
+        startBtn.disabled = true;
+        startBtn.innerHTML = '<span class="spinner"></span>執行中...';
+        activityLog.innerHTML = "";
+
+        currentCount.textContent = "0";
+        successCount.textContent = "0";
+        failedCount.textContent = "0";
+        avgResponseTime.textContent = "0ms";
+        progressBar.style.width = "0%";
+
+        addLogEntry("🚀 開始執行處理", "info");
+
+        try {
+          const response = await fetch("/click", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              url,
+              count,
+              interval,
+              randomize_user_agent: randomizeUserAgent,
+              parallel,
+              max_workers: maxWorkers,
+            }),
+          });
+
+          const reader = response.body.getReader();
+          const decoder = new TextDecoder();
+
+          while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+
+            const text = decoder.decode(value);
+            const lines = text.split("\n");
+
+            for (const line of lines) {
+              if (line.startsWith("data: ")) {
+                const data = JSON.parse(line.slice(6));
+
+                if (data.completed) {
+                  // 完了時の統計
+                  currentCount.textContent = data.total;
+                  successCount.textContent = data.success;
+                  failedCount.textContent = data.failed;
+                  avgResponseTime.textContent = `${(
+                    data.avg_response_time * 1000
+                  ).toFixed(0)}ms`;
+                  progressBar.style.width = "100%";
+
+                  addLogEntry(
+                    `✅ 完成！成功: ${data.success}/${data.total} (執行時間: ${data.duration}秒)`,
+                    "success"
+                  );
+                } else {
+                  // 進行中の更新
+                  const progress = (data.current / data.total) * 100;
+                  progressBar.style.width = `${progress}%`;
+                  currentCount.textContent = data.current;
+                  successCount.textContent = data.success;
+                  failedCount.textContent = data.failed;
+                  avgResponseTime.textContent = `${(
+                    data.response_time * 1000
+                  ).toFixed(0)}ms`;
+
+                  if (data.current % 10 === 0 || data.current === data.total) {
+                    const logType = data.status.startsWith("2")
+                      ? "success"
+                      : "error";
+                    addLogEntry(
+                      `請求 ${data.current}/${data.total} - 狀態: ${
+                        data.status
+                      } (${(data.response_time * 1000).toFixed(0)}ms)`,
+                      logType
+                    );
+                  }
+                }
+              }
+            }
+          }
+        } catch (error) {
+          addLogEntry(`❌ 錯誤: ${error.message}`, "error");
+          console.error("Error:", error);
+        } finally {
+          startBtn.disabled = false;
+          startBtn.innerHTML = "🚀 開始執行";
+        }
+      });
+    </script>
+
+    <div id="trend_notification_app" class="trend_notification_app_outer">
+      <div id="trend_notification"><div id="trend_notification_con"></div></div>
+    </div>
+    <div
+      id="UMS_TOOLTIP"
+      style="
+        position: absolute;
+        cursor: pointer;
+        z-index: 2147483647;
+        background: transparent;
+        top: -100000px;
+        left: -100000px;
+      "
+    ></div>
+    <iframe
+      id="nr-ext-rsicon"
+      style="
+        position: absolute;
+        display: none;
+        width: 50px;
+        height: 50px;
+        z-index: 2147483647;
+        border-style: none;
+        background: transparent;
+      "
+    ></iframe>
+  </body>
+  <umsdataelement id="UMSDataElement" style="display: none"></umsdataelement>
+  <div id="tmtoolbar_manual_rating_injected" style="display: none">init</div>
+  <div id="UMSSendDataEventElement" style="display: none">init</div>
+</html>
