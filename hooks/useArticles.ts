@@ -47,8 +47,10 @@ export interface UseArticlesReturn extends UseArticlesState, UseArticlesActions 
  *
  * Fetches articles from the API on mount and provides filtering capabilities.
  * Handles loading, error states, and article selection.
+ * Supports optional title filtering to narrow down results client-side.
  *
  * @param channelId - GraphQL channel ID to fetch articles from
+ * @param titleFilter - Optional string to filter articles by title (client-side)
  * @returns State and actions for managing articles
  *
  * @example
@@ -60,7 +62,7 @@ export interface UseArticlesReturn extends UseArticlesState, UseArticlesActions 
  *     error,
  *     setSearchTerm,
  *     setSelectedArticle
- *   } = useArticles(channelId);
+ *   } = useArticles(channelId, '【川普政策整理】');
  *
  *   if (loading) return <div>Loading...</div>;
  *   if (error) return <div>Error: {error}</div>;
@@ -78,7 +80,7 @@ export interface UseArticlesReturn extends UseArticlesState, UseArticlesActions 
  * }
  * ```
  */
-export function useArticles(channelId: string): UseArticlesReturn {
+export function useArticles(channelId: string, titleFilter?: string): UseArticlesReturn {
   const [articles, setArticles] = useState<Article[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(true);
@@ -97,7 +99,12 @@ export function useArticles(channelId: string): UseArticlesReturn {
         skip: 1,
       });
 
-      setArticles(fetchedArticles);
+      // Apply title filter if provided (client-side filtering)
+      const filtered = titleFilter
+        ? fetchedArticles.filter((article) => article.title.includes(titleFilter))
+        : fetchedArticles;
+
+      setArticles(filtered);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to fetch articles';
       setError(errorMessage);
@@ -105,14 +112,14 @@ export function useArticles(channelId: string): UseArticlesReturn {
     } finally {
       setLoading(false);
     }
-  }, [channelId]);
+  }, [channelId, titleFilter]);
 
   // Fetch articles when channelId changes
   useEffect(() => {
     fetchArticles();
   }, [fetchArticles]);
 
-  // Filter articles based on search term
+  // Filter articles based on search term (applied after titleFilter)
   const filteredArticles = searchTerm
     ? filterArticlesByTitle(articles, searchTerm)
     : articles;

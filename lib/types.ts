@@ -25,10 +25,10 @@ export interface Article {
  */
 export interface ArticleChannel {
   /** Internal channel identifier */
-  id: 'macro-expert' | 'stock-talk';
+  id: 'macro-expert' | 'stock-talk' | 'trump-topic';
 
   /** Display name in Chinese for tab label */
-  label: '深談總經' | '股市熱話';
+  label: '深談總經' | '股市熱話' | '川普專題';
 
   /** GraphQL channel ID for API query */
   channelId: string;
@@ -38,6 +38,9 @@ export interface ArticleChannel {
 
   /** Default visit interval in milliseconds (FR-008) */
   defaultInterval: number;
+
+  /** Optional title filter - only show articles whose title contains this string */
+  titleFilter?: string;
 }
 
 /**

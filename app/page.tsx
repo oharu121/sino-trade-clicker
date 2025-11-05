@@ -5,19 +5,29 @@
 
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { TabSelector } from '@/components/TabSelector';
 import { ArticleSelector } from '@/components/ArticleSelector';
 import { BoostControls } from '@/components/BoostControls';
 import { useBoostOperation } from '@/hooks/useBoostOperation';
 import { CHANNELS, CHANNEL_LIST } from '@/lib/constants';
+import { fetchArticlesByChannel } from '@/lib/articleService';
 import type { Article } from '@/lib/types';
+
+/**
+ * Article cache entry
+ */
+interface CacheEntry {
+  articles: Article[];
+  timestamp: number;
+}
 
 /**
  * Home Page Component
  *
  * Main application interface for selecting articles and boosting view counts.
  * Implements User Story 1: Select and Boost Article Views.
+ * Features in-memory article caching to avoid redundant API calls when switching tabs.
  */
 export default function Home() {
   // Channel selection state
@@ -26,11 +36,77 @@ export default function Home() {
   );
   const [selectedArticle, setSelectedArticle] = useState<Article | null>(null);
 
+  // Article cache: { channelId: { articles, timestamp } }
+  const [articleCache, setArticleCache] = useState<Record<string, CacheEntry>>({});
+
+  // Current channel articles state
+  const [articles, setArticles] = useState<Article[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+
   // Boost operation state
   const { state: operation, start, pause, resume, reset } = useBoostOperation();
 
   // Get current channel configuration
   const currentChannel = CHANNEL_LIST.find((ch) => ch.id === selectedChannelId);
+
+  /**
+   * Fetch articles for current channel
+   * Uses cache if available, otherwise fetches from API
+   */
+  const fetchArticles = useCallback(async () => {
+    if (!currentChannel) return;
+
+    const cacheKey = `${currentChannel.channelId}-${currentChannel.titleFilter || ''}`;
+    const cached = articleCache[cacheKey];
+
+    // Check if cache exists
+    if (cached) {
+      setArticles(cached.articles);
+      setLoading(false);
+      setError(null);
+      return;
+    }
+
+    // No cache, fetch from API
+    setLoading(true);
+    setError(null);
+
+    try {
+      const fetchedArticles = await fetchArticlesByChannel(currentChannel.channelId, {
+        limit: 100,
+        page: 0,
+        skip: 1,
+      });
+
+      // Apply title filter if provided
+      const filtered = currentChannel.titleFilter
+        ? fetchedArticles.filter((article) => article.title.includes(currentChannel.titleFilter!))
+        : fetchedArticles;
+
+      // Update cache
+      setArticleCache((prev) => ({
+        ...prev,
+        [cacheKey]: {
+          articles: filtered,
+          timestamp: Date.now(),
+        },
+      }));
+
+      setArticles(filtered);
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Failed to fetch articles';
+      setError(errorMessage);
+      console.error('Error fetching articles:', err);
+    } finally {
+      setLoading(false);
+    }
+  }, [currentChannel, articleCache]);
+
+  // Fetch articles when channel changes
+  useEffect(() => {
+    fetchArticles();
+  }, [fetchArticles]);
 
   /**
    * Handle channel tab change
@@ -89,6 +165,9 @@ export default function Home() {
           <section>
             <ArticleSelector
               channelId={currentChannel?.channelId || ''}
+              articles={articles}
+              loading={loading}
+              error={error}
               selectedArticle={selectedArticle}
               onArticleSelect={handleArticleSelect}
               autoFocus

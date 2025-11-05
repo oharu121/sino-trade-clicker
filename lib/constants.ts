@@ -32,6 +32,14 @@ export const CHANNELS: Record<string, ArticleChannel> = {
     defaultCount: 2000,
     defaultInterval: 300,
   },
+  TRUMP_TOPIC: {
+    id: 'trump-topic',
+    label: '川普專題',
+    channelId: '630c2850c6435a2ff402ccfb', // Same as 股市熱話
+    defaultCount: 2000,
+    defaultInterval: 300,
+    titleFilter: '【川普政策整理】', // Client-side filter
+  },
 } as const;
 
 /**
@@ -39,7 +47,7 @@ export const CHANNELS: Record<string, ArticleChannel> = {
  */
 export const CHANNEL_LIST: ArticleChannel[] = [
   CHANNELS.MACRO_EXPERT,
-  CHANNELS.STOCK_TALK,
+  CHANNELS.TRUMP_TOPIC,
 ];
 
 /**

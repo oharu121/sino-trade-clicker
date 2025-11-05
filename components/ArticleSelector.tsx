@@ -5,9 +5,8 @@
 
 'use client';
 
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Select } from './ui/Select';
-import { useArticles } from '@/hooks/useArticles';
 import type { Article } from '@/lib/types';
 
 /**
@@ -16,6 +15,12 @@ import type { Article } from '@/lib/types';
 export interface ArticleSelectorProps {
   /** Channel ID to fetch articles from */
   channelId: string;
+  /** Pre-fetched articles to display */
+  articles: Article[];
+  /** Loading state */
+  loading: boolean;
+  /** Error message if any */
+  error: string | null;
   /** Currently selected article */
   selectedArticle: Article | null;
   /** Selection change handler */
@@ -28,12 +33,15 @@ export interface ArticleSelectorProps {
  * Article Selector Component
  *
  * Searchable dropdown for selecting articles from a channel.
- * Fetches articles via useArticles hook and provides search filtering.
+ * Accepts pre-fetched articles from parent component for efficient caching.
  *
  * @example
  * ```tsx
  * <ArticleSelector
  *   channelId="6514f8b3b13f2760605fcef1"
+ *   articles={articles}
+ *   loading={loading}
+ *   error={error}
  *   selectedArticle={article}
  *   onArticleSelect={setArticle}
  *   autoFocus
@@ -42,31 +50,21 @@ export interface ArticleSelectorProps {
  */
 export function ArticleSelector({
   channelId,
+  articles,
+  loading,
+  error,
   selectedArticle,
   onArticleSelect,
   autoFocus = false,
 }: ArticleSelectorProps) {
-  const {
-    filteredArticles,
-    loading,
-    error,
-    setSearchTerm,
-    setSelectedArticle,
-  } = useArticles(channelId);
-
-  // Sync internal article state with external prop
-  useEffect(() => {
-    setSelectedArticle(selectedArticle);
-  }, [selectedArticle, setSelectedArticle]);
-
   // Convert articles to select options
-  const options = filteredArticles.map((article) => ({
+  const options = articles.map((article) => ({
     value: article._id,
     label: article.title,
   }));
 
   const handleChange = (articleId: string) => {
-    const article = filteredArticles.find((a) => a._id === articleId);
+    const article = articles.find((a) => a._id === articleId);
     // Add channelId to the article when selected
     if (article) {
       onArticleSelect({ ...article, channelId });
@@ -84,12 +82,12 @@ export function ArticleSelector({
         onChange={handleChange}
         searchable
         loading={loading}
-        error={error || undefined}
+        error={error ? error : undefined}
         placeholder="搜尋文章..."
         fullWidth
       />
 
-      {error && (
+      {error && !loading && (
         <div className="mt-2 p-3 bg-red-50 border border-red-200 rounded-lg">
           <p className="text-sm text-red-600">
             無法載入文章列表。請稍後再試。

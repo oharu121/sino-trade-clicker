@@ -26,7 +26,7 @@ describe('TabSelector', () => {
     );
 
     expect(screen.getByRole('tab', { name: '深談總經' })).toBeInTheDocument();
-    expect(screen.getByRole('tab', { name: '股市熱話' })).toBeInTheDocument();
+    expect(screen.getByRole('tab', { name: '川普專題' })).toBeInTheDocument();
   });
 
   it('should highlight the selected tab', () => {
@@ -39,10 +39,10 @@ describe('TabSelector', () => {
     );
 
     const macroTab = screen.getByRole('tab', { name: '深談總經' });
-    const stockTab = screen.getByRole('tab', { name: '股市熱話' });
+    const trumpTab = screen.getByRole('tab', { name: '川普專題' });
 
     expect(macroTab).toHaveAttribute('aria-selected', 'true');
-    expect(stockTab).toHaveAttribute('aria-selected', 'false');
+    expect(trumpTab).toHaveAttribute('aria-selected', 'false');
   });
 
   it('should call onChannelChange when clicking a tab', async () => {
@@ -56,10 +56,10 @@ describe('TabSelector', () => {
       />
     );
 
-    const stockTab = screen.getByRole('tab', { name: '股市熱話' });
-    await user.click(stockTab);
+    const trumpTab = screen.getByRole('tab', { name: '川普專題' });
+    await user.click(trumpTab);
 
-    expect(mockOnChannelChange).toHaveBeenCalledWith(CHANNELS.STOCK_TALK.id);
+    expect(mockOnChannelChange).toHaveBeenCalledWith(CHANNELS.TRUMP_TOPIC.id);
     expect(mockOnChannelChange).toHaveBeenCalledTimes(1);
   });
 
@@ -123,25 +123,25 @@ describe('TabSelector', () => {
     );
 
     let macroTab = screen.getByRole('tab', { name: '深談總經' });
-    let stockTab = screen.getByRole('tab', { name: '股市熱話' });
+    let trumpTab = screen.getByRole('tab', { name: '川普專題' });
 
     expect(macroTab).toHaveAttribute('aria-selected', 'true');
-    expect(stockTab).toHaveAttribute('aria-selected', 'false');
+    expect(trumpTab).toHaveAttribute('aria-selected', 'false');
 
     // Simulate external state change
     rerender(
       <TabSelector
         channels={CHANNEL_LIST}
-        selectedChannelId={CHANNELS.STOCK_TALK.id}
+        selectedChannelId={CHANNELS.TRUMP_TOPIC.id}
         onChannelChange={mockOnChannelChange}
       />
     );
 
     macroTab = screen.getByRole('tab', { name: '深談總經' });
-    stockTab = screen.getByRole('tab', { name: '股市熱話' });
+    trumpTab = screen.getByRole('tab', { name: '川普專題' });
 
     expect(macroTab).toHaveAttribute('aria-selected', 'false');
-    expect(stockTab).toHaveAttribute('aria-selected', 'true');
+    expect(trumpTab).toHaveAttribute('aria-selected', 'true');
   });
 
   it('should be keyboard accessible', async () => {
@@ -155,7 +155,7 @@ describe('TabSelector', () => {
       />
     );
 
-    const stockTab = screen.getByRole('tab', { name: '股市熱話' });
+    const trumpTab = screen.getByRole('tab', { name: '川普專題' });
 
     // Tab to focus the element
     await user.tab();
