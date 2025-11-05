@@ -107,7 +107,7 @@ export interface BoostOperation {
 /**
  * Activity log entry type
  */
-export type LogType = 'info' | 'success' | 'error';
+export type LogType = 'info' | 'success' | 'warning' | 'error';
 
 /**
  * Activity log entry for operation timeline

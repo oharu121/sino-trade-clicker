@@ -9,6 +9,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { TabSelector } from '@/components/TabSelector';
 import { ArticleSelector } from '@/components/ArticleSelector';
 import { BoostControls } from '@/components/BoostControls';
+import { ProgressMonitor } from '@/components/ProgressMonitor';
 import { useBoostOperation } from '@/hooks/useBoostOperation';
 import { CHANNELS, CHANNEL_LIST } from '@/lib/constants';
 import { fetchArticlesByChannel } from '@/lib/articleService';
@@ -45,7 +46,7 @@ export default function Home() {
   const [error, setError] = useState<string | null>(null);
 
   // Boost operation state
-  const { state: operation, start, pause, resume, reset } = useBoostOperation();
+  const { state: operation, start, pause, resume, reset, getProgress } = useBoostOperation();
 
   // Get current channel configuration
   const currentChannel = CHANNEL_LIST.find((ch) => ch.id === selectedChannelId);
@@ -204,71 +205,11 @@ export default function Home() {
             />
           </section>
 
-          {/* Operation Status */}
-          {operation.status !== 'idle' && (
-            <section className="p-4 bg-white border border-gray-200 rounded-lg">
-              <div className="flex items-center justify-between mb-2">
-                <h3 className="text-lg font-medium text-gray-900">
-                  執行狀態
-                </h3>
-                <span
-                  className={`
-                    px-3 py-1 rounded-full text-sm font-medium
-                    ${
-                      operation.status === 'running'
-                        ? 'bg-green-100 text-green-800'
-                        : operation.status === 'paused'
-                        ? 'bg-yellow-100 text-yellow-800'
-                        : operation.status === 'completed'
-                        ? 'bg-blue-100 text-blue-800'
-                        : 'bg-red-100 text-red-800'
-                    }
-                  `.trim().replace(/\s+/g, ' ')}
-                >
-                  {operation.status === 'running' && '執行中'}
-                  {operation.status === 'paused' && '已暫停'}
-                  {operation.status === 'completed' && '已完成'}
-                  {operation.status === 'error' && '錯誤'}
-                </span>
-              </div>
-
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-4">
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-gray-900">
-                    {operation.metrics.current}
-                  </div>
-                  <div className="text-sm text-gray-500">進行中</div>
-                </div>
-
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-green-600">
-                    {operation.metrics.success}
-                  </div>
-                  <div className="text-sm text-gray-500">成功</div>
-                </div>
-
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-red-600">
-                    {operation.metrics.failed}
-                  </div>
-                  <div className="text-sm text-gray-500">失敗</div>
-                </div>
-
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-blue-600">
-                    {operation.metrics.averageResponseTime}ms
-                  </div>
-                  <div className="text-sm text-gray-500">平均回應</div>
-                </div>
-              </div>
-
-              {operation.error && (
-                <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg">
-                  <p className="text-sm text-red-600">{operation.error}</p>
-                </div>
-              )}
-            </section>
-          )}
+          {/* Progress Monitor */}
+          <ProgressMonitor
+            operation={operation}
+            progress={getProgress()}
+          />
         </main>
 
         {/* Footer */}
