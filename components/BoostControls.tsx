@@ -71,7 +71,9 @@ export function BoostControls({
   // Update form values when defaults change (e.g., tab switch)
   useEffect(() => {
     if (status === 'idle') {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setCount(defaultCount.toString());
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setInterval(defaultInterval.toString());
     }
   }, [defaultCount, defaultInterval, status]);

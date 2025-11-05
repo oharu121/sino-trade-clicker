@@ -65,6 +65,7 @@ export function ProgressMonitor({
     // Operation start
     if (status === 'running' && activityLog.length === 0) {
       const timestamp = Date.now();
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setActivityLog([{
         id: `${timestamp}-${Math.random().toString(36).substr(2, 9)}`,
         timestamp,
@@ -158,6 +159,7 @@ export function ProgressMonitor({
   // Reset log when operation resets
   useEffect(() => {
     if (operation.status === 'idle' && activityLog.length > 0) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setActivityLog([]);
       lastCurrentRef.current = 0;
       lastStatusRef.current = 'idle';

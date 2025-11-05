@@ -35,7 +35,9 @@ describe('ArticleSelector', () => {
       />
     );
 
-    expect(screen.getByText('Loading...')).toBeInTheDocument();
+    // Should show skeleton loading state
+    const loadingElements = screen.getAllByText('Loading...');
+    expect(loadingElements.length).toBeGreaterThan(0);
   });
 
   it('should display articles when provided', () => {

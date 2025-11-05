@@ -7,6 +7,7 @@
 
 import React from 'react';
 import { Select } from './ui/Select';
+import { ArticleSelectorSkeleton } from './ui/Skeleton';
 import type { Article } from '@/lib/types';
 
 /**
@@ -55,7 +56,7 @@ export function ArticleSelector({
   error,
   selectedArticle,
   onArticleSelect,
-  autoFocus = false,
+  autoFocus: _autoFocus = false,
 }: ArticleSelectorProps) {
   // Convert articles to select options
   const options = articles.map((article) => ({
@@ -72,6 +73,11 @@ export function ArticleSelector({
       onArticleSelect(null);
     }
   };
+
+  // Show skeleton while loading and no cached data
+  if (loading && articles.length === 0) {
+    return <ArticleSelectorSkeleton />;
+  }
 
   return (
     <div className="w-full">

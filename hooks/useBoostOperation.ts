@@ -6,7 +6,7 @@
 'use client';
 
 import { useReducer, useCallback, useRef, useEffect } from 'react';
-import type { Article, BoostOperation, BoostStatus } from '@/lib/types';
+import type { Article, BoostOperation } from '@/lib/types';
 import { startBoost, type BoostController, type BoostProgress } from '@/lib/boostService';
 
 /**
@@ -264,7 +264,7 @@ export function useBoostOperation(): UseBoostOperationReturn {
 
       // Track paused duration
       if (pauseStartTimeRef.current) {
-        const pausedTime = Date.now() - pauseStartTimeRef.current;
+        const _pausedTime = Date.now() - pauseStartTimeRef.current;
         // Update timing state with paused duration
         // Note: We should add an action for this in a full implementation
         pauseStartTimeRef.current = null;
@@ -292,6 +292,7 @@ export function useBoostOperation(): UseBoostOperationReturn {
   const getProgress = useCallback(() => {
     if (state.config.count === 0) return 0;
     return Math.round((state.metrics.current / state.config.count) * 100);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.config.count, state.metrics.current]);
 
   return {

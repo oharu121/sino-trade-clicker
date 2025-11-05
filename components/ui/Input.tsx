@@ -50,8 +50,9 @@ export function Input({
   id,
   ...props
 }: InputProps) {
-  // Generate ID for accessibility
-  const inputId = id || `input-${React.useId()}`;
+  // Generate ID for accessibility (hooks must be called unconditionally)
+  const generatedId = React.useId();
+  const inputId = id || `input-${generatedId}`;
   const errorId = `${inputId}-error`;
   const helperTextId = `${inputId}-helper`;
 

@@ -106,14 +106,13 @@ describe('TabSelector', () => {
     );
 
     const macroTab = screen.getByRole('tab', { name: '深談總經' });
-    const styles = window.getComputedStyle(macroTab);
 
     // Check for min-h-[44px] class
     expect(macroTab.className).toContain('min-h-[44px]');
   });
 
   it('should switch active state correctly', async () => {
-    const user = userEvent.setup();
+    const _user = userEvent.setup();
     const { rerender } = render(
       <TabSelector
         channels={CHANNEL_LIST}
@@ -155,7 +154,7 @@ describe('TabSelector', () => {
       />
     );
 
-    const trumpTab = screen.getByRole('tab', { name: '川普專題' });
+    const _trumpTab = screen.getByRole('tab', { name: '川普專題' });
 
     // Tab to focus the element
     await user.tab();
