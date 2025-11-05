@@ -71,38 +71,49 @@ export interface BoostController {
 }
 
 /**
- * Send a single view request to article URL
+ * Send a single view request to article URL via backend proxy
+ *
+ * Uses backend API proxy to bypass CORS and verify article page loaded correctly.
+ * The proxy checks if the response contains the article title to ensure the view
+ * was actually counted.
  *
  * @param url - Article URL to request
+ * @param articleTitle - Article title to verify in response
  * @param userAgent - User-Agent header value
- * @returns Response time in milliseconds and status code
+ * @returns Response time in milliseconds, status code, and success status
  */
-async function sendViewRequest(url: string, userAgent: string): Promise<{ responseTime: number; statusCode: number }> {
-  const startTime = performance.now();
-
+async function sendViewRequest(
+  url: string,
+  articleTitle: string,
+  userAgent: string
+): Promise<{ responseTime: number; statusCode: number; success: boolean; error?: string }> {
   try {
-    const response = await fetch(url, {
-      method: 'GET',
+    const response = await fetch('/api/boost-view', {
+      method: 'POST',
       headers: {
-        'User-Agent': userAgent,
+        'Content-Type': 'application/json',
       },
-      // Don't cache requests
+      body: JSON.stringify({
+        url,
+        articleTitle,
+        userAgent,
+      }),
       cache: 'no-store',
     });
 
-    const endTime = performance.now();
-    const responseTime = Math.round(endTime - startTime);
+    const data = await response.json();
 
     return {
-      responseTime,
-      statusCode: response.status,
+      responseTime: data.responseTime,
+      statusCode: data.statusCode,
+      success: data.success,
+      error: data.error,
     };
   } catch (error) {
-    const endTime = performance.now();
-    const responseTime = Math.round(endTime - startTime);
-
     throw {
-      responseTime,
+      responseTime: 0,
+      statusCode: 0,
+      success: false,
       error: error instanceof Error ? error.message : 'Unknown error',
     };
   }
@@ -147,8 +158,8 @@ export function startBoost(config: BoostConfig, callbacks: BoostCallbacks = {}):
   const { article, count, interval } = config;
   const { onProgress, onComplete, onError } = callbacks;
 
-  // Build article URL
-  const articleUrl = buildArticleUrl(article);
+  // Build article URL with channel ID for correct path
+  const articleUrl = buildArticleUrl(article, article.channelId);
 
   // State tracking
   let currentIndex = 0;
@@ -167,26 +178,31 @@ export function startBoost(config: BoostConfig, callbacks: BoostCallbacks = {}):
     const userAgent = getRandomUserAgent();
 
     try {
-      const { responseTime, statusCode } = await sendViewRequest(articleUrl, userAgent);
+      const { responseTime, statusCode, success, error } = await sendViewRequest(
+        articleUrl,
+        article.title,
+        userAgent
+      );
 
       if (isCancelled) return;
 
       onProgress?.({
         current: requestIndex,
         total: count,
-        success: statusCode >= 200 && statusCode < 300,
+        success,
         responseTime,
         statusCode,
+        error,
       });
     } catch (err: unknown) {
       if (isCancelled) return;
 
-      const errorData = err as { responseTime: number; error: string };
+      const errorData = err as { responseTime: number; error: string; success: boolean };
 
       onProgress?.({
         current: requestIndex,
         total: count,
-        success: false,
+        success: errorData.success || false,
         responseTime: errorData.responseTime,
         error: errorData.error,
       });

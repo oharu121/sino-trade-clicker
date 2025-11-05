@@ -88,9 +88,9 @@ Next.js App Router structure:
 
 ### Component Tests for User Story 1
 
-- [ ] T031 [P] [US1] Component test for TabSelector in __tests__/components/TabSelector.test.tsx (test tab switching, active state)
-- [ ] T032 [P] [US1] Component test for ArticleSelector in __tests__/components/ArticleSelector.test.tsx (test dropdown open, search filter, selection)
-- [ ] T033 [P] [US1] Component test for BoostControls in __tests__/components/BoostControls.test.tsx (test validation, form submission, disabled states)
+- [x] T031 [P] [US1] Component test for TabSelector in __tests__/components/TabSelector.test.tsx (test tab switching, active state)
+- [x] T032 [P] [US1] Component test for ArticleSelector in __tests__/components/ArticleSelector.test.tsx (test dropdown open, search filter, selection)
+- [x] T033 [P] [US1] Component test for BoostControls in __tests__/components/BoostControls.test.tsx (test validation, form submission, disabled states)
 
 **Checkpoint**: At this point, User Story 1 should be fully functional and testable independently. User can select article and start boost operation.
 

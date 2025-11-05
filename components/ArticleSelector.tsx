@@ -67,7 +67,12 @@ export function ArticleSelector({
 
   const handleChange = (articleId: string) => {
     const article = filteredArticles.find((a) => a._id === articleId);
-    onArticleSelect(article || null);
+    // Add channelId to the article when selected
+    if (article) {
+      onArticleSelect({ ...article, channelId });
+    } else {
+      onArticleSelect(null);
+    }
   };
 
   return (

@@ -13,6 +13,9 @@ export interface Article {
   /** Article title in Chinese (may contain special characters) */
   title: string;
 
+  /** Channel ID for determining URL path */
+  channelId?: string;
+
   /** Computed article URL for view boosting */
   url?: string;
 }

@@ -28,9 +28,14 @@ describe('boostService', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    // Mock backend proxy response
     (global.fetch as jest.Mock).mockResolvedValue({
-      status: 200,
       ok: true,
+      json: async () => ({
+        success: true,
+        statusCode: 200,
+        responseTime: 150,
+      }),
     });
   });
 
@@ -87,9 +92,14 @@ describe('boostService', () => {
     });
 
     it('should report success for 2xx responses', async () => {
+      // Mock should already be set in beforeEach, but let's be explicit
       (global.fetch as jest.Mock).mockResolvedValue({
-        status: 200,
         ok: true,
+        json: async () => ({
+          success: true,
+          statusCode: 200,
+          responseTime: 150,
+        }),
       });
 
       const config: BoostConfig = {
@@ -117,8 +127,13 @@ describe('boostService', () => {
 
     it('should report failure for non-2xx responses', async () => {
       (global.fetch as jest.Mock).mockResolvedValue({
-        status: 500,
-        ok: false,
+        ok: true,
+        json: async () => ({
+          success: false,
+          statusCode: 500,
+          responseTime: 150,
+          error: 'Internal Server Error',
+        }),
       });
 
       const config: BoostConfig = {
@@ -232,16 +247,18 @@ describe('boostService', () => {
 
       expect(global.fetch).toHaveBeenCalledTimes(3);
 
-      // Check that User-Agent headers are set
+      // Check that requests are sent to backend proxy with User-Agent in body
       const calls = (global.fetch as jest.Mock).mock.calls;
       calls.forEach((call) => {
+        expect(call[0]).toBe('/api/boost-view');
         const options = call[1];
-        expect(options.headers).toHaveProperty('User-Agent');
-        expect(typeof options.headers['User-Agent']).toBe('string');
+        const body = JSON.parse(options.body);
+        expect(body).toHaveProperty('userAgent');
+        expect(typeof body.userAgent).toBe('string');
       });
     });
 
-    it('should send requests to correct article URL', async () => {
+    it('should send requests to correct article URL via backend proxy', async () => {
       const config: BoostConfig = {
         article: mockArticle,
         count: 1,
@@ -257,8 +274,14 @@ describe('boostService', () => {
       });
 
       const calls = (global.fetch as jest.Mock).mock.calls;
-      expect(calls[0][0]).toContain('https://www.sinotrade.com.tw/richclub/MacroExpert/');
-      expect(calls[0][0]).toContain('--68e4a15046b10f98ffe2f4bc');
+      expect(calls[0][0]).toBe('/api/boost-view');
+
+      const options = calls[0][1];
+      const body = JSON.parse(options.body);
+
+      expect(body.url).toContain('https://www.sinotrade.com.tw/richclub/MacroExpert/');
+      expect(body.url).toContain('--68e4a15046b10f98ffe2f4bc');
+      expect(body.articleTitle).toBe('測試文章標題');
     });
   });
 
