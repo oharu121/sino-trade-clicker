@@ -58,15 +58,15 @@ export function Input({
 
   const widthClass = fullWidth ? 'w-full' : '';
   const errorClass = error
-    ? 'border-red-500 focus:border-red-500 focus:ring-red-500'
-    : 'border-gray-300 focus:border-blue-500 focus:ring-blue-500';
+    ? 'border-red-400 dark:border-red-500 focus:border-red-500 focus:ring-red-500/50 bg-red-50 dark:bg-red-950/20'
+    : 'border-slate-300 dark:border-slate-600 focus:border-blue-500 focus:ring-blue-500/50 bg-white dark:bg-slate-800';
 
   return (
-    <div className={`flex flex-col gap-1 ${widthClass}`}>
+    <div className={`flex flex-col gap-2 ${widthClass}`}>
       {label && (
         <label
           htmlFor={inputId}
-          className="text-sm font-medium text-gray-700"
+          className="text-sm font-semibold text-slate-700 dark:text-slate-300"
         >
           {label}
         </label>
@@ -75,19 +75,24 @@ export function Input({
       <input
         id={inputId}
         className={`
-          min-h-[44px]
-          px-3 py-2
-          rounded-lg
+          min-h-[48px]
+          px-4 py-3
+          rounded-xl
           border-2
           text-base
-          transition-colors
-          duration-150
+          font-medium
+          text-slate-900 dark:text-slate-100
+          placeholder:text-slate-400 dark:placeholder:text-slate-500
+          transition-all
+          duration-200
           focus:outline-none
-          focus:ring-2
-          focus:ring-offset-1
-          disabled:bg-gray-100
-          disabled:text-gray-500
+          focus:ring-4
+          focus:ring-offset-0
+          focus:shadow-lg
+          disabled:bg-slate-100 dark:disabled:bg-slate-900
+          disabled:text-slate-400 dark:disabled:text-slate-600
           disabled:cursor-not-allowed
+          disabled:border-slate-200 dark:disabled:border-slate-700
           ${errorClass}
           ${widthClass}
           ${className}
@@ -100,19 +105,24 @@ export function Input({
       />
 
       {error && (
-        <span
-          id={errorId}
-          className="text-sm text-red-600"
-          role="alert"
-        >
-          {error}
-        </span>
+        <div className="flex items-start gap-2">
+          <svg className="w-4 h-4 text-red-600 dark:text-red-500 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+          </svg>
+          <span
+            id={errorId}
+            className="text-sm font-medium text-red-700 dark:text-red-400"
+            role="alert"
+          >
+            {error}
+          </span>
+        </div>
       )}
 
       {!error && helperText && (
         <span
           id={helperTextId}
-          className="text-sm text-gray-500"
+          className="text-sm text-slate-600 dark:text-slate-400"
         >
           {helperText}
         </span>

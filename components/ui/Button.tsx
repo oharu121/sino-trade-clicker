@@ -30,11 +30,11 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
 function getVariantClasses(variant: ButtonVariant): string {
   const variants: Record<ButtonVariant, string> = {
     primary:
-      'bg-blue-600 text-white hover:bg-blue-700 active:bg-blue-800 disabled:bg-blue-300 disabled:cursor-not-allowed',
+      'bg-gradient-to-r from-blue-600 to-indigo-600 text-white hover:from-blue-700 hover:to-indigo-700 active:from-blue-800 active:to-indigo-800 disabled:from-gray-300 disabled:to-gray-400 disabled:cursor-not-allowed shadow-lg shadow-blue-500/30 hover:shadow-xl hover:shadow-blue-500/40',
     secondary:
-      'bg-gray-200 text-gray-900 hover:bg-gray-300 active:bg-gray-400 disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed',
+      'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border-2 border-slate-300 dark:border-slate-600 hover:border-blue-500 dark:hover:border-blue-400 hover:text-blue-600 dark:hover:text-blue-400 active:bg-slate-50 dark:active:bg-slate-700 disabled:bg-gray-100 dark:disabled:bg-slate-900 disabled:text-gray-400 disabled:border-gray-200 disabled:cursor-not-allowed shadow-sm',
     danger:
-      'bg-red-600 text-white hover:bg-red-700 active:bg-red-800 disabled:bg-red-300 disabled:cursor-not-allowed',
+      'bg-gradient-to-r from-red-600 to-rose-600 text-white hover:from-red-700 hover:to-rose-700 active:from-red-800 active:to-rose-800 disabled:from-gray-300 disabled:to-gray-400 disabled:cursor-not-allowed shadow-lg shadow-red-500/30 hover:shadow-xl hover:shadow-red-500/40',
   };
 
   return variants[variant];
@@ -75,16 +75,21 @@ export function Button({
     <button
       className={`
         min-h-[44px] min-w-[44px]
-        px-4 py-2
-        rounded-lg
-        font-medium
+        px-6 py-3
+        rounded-xl
+        font-semibold
         text-base
-        transition-colors
-        duration-150
+        transition-all
+        duration-200
+        transform
+        hover:scale-[1.02]
+        active:scale-[0.98]
         focus:outline-none
-        focus:ring-2
+        focus:ring-4
         focus:ring-offset-2
-        focus:ring-blue-500
+        focus:ring-blue-500/50
+        disabled:transform-none
+        disabled:hover:scale-100
         ${variantClasses}
         ${widthClass}
         ${className}

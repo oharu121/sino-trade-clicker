@@ -54,15 +54,23 @@ export function ProgressBar({
   const heightClasses = {
     sm: 'h-2',
     md: 'h-4',
-    lg: 'h-6',
+    lg: 'h-8',
   };
 
-  // Color classes
+  // Color classes with gradients
   const colorClasses = {
-    primary: 'bg-blue-600',
-    success: 'bg-green-600',
-    warning: 'bg-yellow-600',
-    error: 'bg-red-600',
+    primary: 'bg-gradient-to-r from-blue-600 to-indigo-600',
+    success: 'bg-gradient-to-r from-emerald-600 to-green-600',
+    warning: 'bg-gradient-to-r from-amber-600 to-orange-600',
+    error: 'bg-gradient-to-r from-red-600 to-rose-600',
+  };
+
+  // Glow effects
+  const glowClasses = {
+    primary: 'shadow-lg shadow-blue-500/50',
+    success: 'shadow-lg shadow-emerald-500/50',
+    warning: 'shadow-lg shadow-amber-500/50',
+    error: 'shadow-lg shadow-red-500/50',
   };
 
   // Text size classes
@@ -75,10 +83,10 @@ export function ProgressBar({
   return (
     <div className="w-full">
       {label && (
-        <div className="flex justify-between mb-1">
-          <span className="text-sm font-medium text-gray-700">{label}</span>
+        <div className="flex justify-between mb-2">
+          <span className="text-sm font-semibold text-slate-700 dark:text-slate-300">{label}</span>
           {showPercentage && (
-            <span className="text-sm font-medium text-gray-700">
+            <span className="text-sm font-bold text-slate-900 dark:text-slate-100">
               {clampedValue}%
             </span>
           )}
@@ -86,7 +94,7 @@ export function ProgressBar({
       )}
 
       <div
-        className={`w-full bg-gray-200 rounded-full overflow-hidden ${heightClasses[size]}`}
+        className={`w-full bg-gradient-to-r from-slate-200 to-slate-300 dark:from-slate-700 dark:to-slate-600 rounded-full overflow-hidden shadow-inner ${heightClasses[size]}`}
         role="progressbar"
         aria-valuenow={clampedValue}
         aria-valuemin={0}
@@ -94,11 +102,14 @@ export function ProgressBar({
         aria-label={label || 'Progress'}
       >
         <div
-          className={`${colorClasses[variant]} ${heightClasses[size]} rounded-full transition-all duration-300 ease-out flex items-center justify-center`}
+          className={`${colorClasses[variant]} ${heightClasses[size]} ${glowClasses[variant]} rounded-full transition-all duration-500 ease-out flex items-center justify-center relative overflow-hidden`}
           style={{ width: `${clampedValue}%` }}
         >
+          {/* Animated shimmer effect */}
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-shimmer" style={{ backgroundSize: '200% 100%' }}></div>
+
           {showPercentage && size === 'lg' && clampedValue > 10 && (
-            <span className={`${textSizeClasses[size]} font-medium text-white`}>
+            <span className={`${textSizeClasses[size]} font-bold text-white drop-shadow-lg relative z-10`}>
               {clampedValue}%
             </span>
           )}

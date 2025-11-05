@@ -139,22 +139,27 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-2xl mx-auto px-4 py-8">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-950 dark:via-blue-950 dark:to-indigo-950">
+      <div className="max-w-4xl mx-auto px-4 py-12 sm:px-6 lg:px-8">
         {/* Header */}
-        <header className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
+        <header className="mb-12 text-center animate-fade-in">
+          <div className="inline-block mb-4 px-4 py-1.5 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full">
+            <span className="text-xs font-semibold text-white tracking-wide uppercase">
+              Sino Trade Platform
+            </span>
+          </div>
+          <h1 className="text-5xl sm:text-6xl font-extrabold mb-4 bg-gradient-to-r from-slate-900 via-blue-800 to-indigo-900 dark:from-slate-100 dark:via-blue-200 dark:to-indigo-200 bg-clip-text text-transparent leading-tight">
             文章瀏覽管理器
           </h1>
-          <p className="text-gray-600">
-            選擇文章並自動增加瀏覽次數
+          <p className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto font-light">
+            選擇文章並自動增加瀏覽次數，支援多頻道智能管理
           </p>
         </header>
 
         {/* Main Content */}
-        <main className="space-y-6">
+        <main className="space-y-8">
           {/* Channel Tab Selector */}
-          <section>
+          <section className="animate-slide-in">
             <TabSelector
               channels={CHANNEL_LIST}
               selectedChannelId={selectedChannelId}
@@ -163,7 +168,7 @@ export default function Home() {
           </section>
 
           {/* Article Selector */}
-          <section>
+          <section className="animate-slide-in" style={{ animationDelay: '0.1s' }}>
             <ArticleSelector
               channelId={currentChannel?.channelId || ''}
               articles={articles}
@@ -177,44 +182,75 @@ export default function Home() {
 
           {/* Selected Article Display */}
           {selectedArticle && (
-            <section className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
-              <h3 className="text-sm font-medium text-blue-900 mb-1">
-                已選擇文章
-              </h3>
-              <p className="text-sm text-blue-700">
-                {selectedArticle.title}
-              </p>
+            <section className="relative overflow-hidden animate-scale-in">
+              <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-indigo-600 opacity-10"></div>
+              <div className="relative p-6 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm border border-blue-200 dark:border-blue-800 rounded-2xl shadow-lg">
+                <div className="flex items-start gap-3">
+                  <div className="flex-shrink-0 w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center">
+                    <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <h3 className="text-sm font-semibold text-blue-900 dark:text-blue-300 mb-2">
+                      已選擇文章
+                    </h3>
+                    <p className="text-base text-slate-700 dark:text-slate-300 leading-relaxed">
+                      {selectedArticle.title}
+                    </p>
+                  </div>
+                </div>
+              </div>
             </section>
           )}
 
           {/* Boost Controls */}
-          <section className="p-6 bg-white border border-gray-200 rounded-lg shadow-sm">
-            <h2 className="text-xl font-semibold text-gray-900 mb-4">
-              執行設定
-            </h2>
+          <section className="animate-slide-in" style={{ animationDelay: '0.2s' }}>
+            <div className="relative overflow-hidden rounded-2xl shadow-xl">
+              <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-indigo-600/5"></div>
+              <div className="relative p-8 bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm border border-slate-200 dark:border-slate-700">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg">
+                    <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                    </svg>
+                  </div>
+                  <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100">
+                    執行設定
+                  </h2>
+                </div>
 
-            <BoostControls
-              article={selectedArticle}
-              status={operation.status}
-              defaultCount={currentChannel?.defaultCount || 200}
-              defaultInterval={currentChannel?.defaultInterval || 300}
-              onStart={handleStart}
-              onPause={pause}
-              onResume={resume}
-              onReset={reset}
-            />
+                <BoostControls
+                  article={selectedArticle}
+                  status={operation.status}
+                  defaultCount={currentChannel?.defaultCount || 200}
+                  defaultInterval={currentChannel?.defaultInterval || 300}
+                  onStart={handleStart}
+                  onPause={pause}
+                  onResume={resume}
+                  onReset={reset}
+                />
+              </div>
+            </div>
           </section>
 
           {/* Progress Monitor */}
-          <ProgressMonitor
-            operation={operation}
-            progress={getProgress()}
-          />
+          <div className="animate-slide-in" style={{ animationDelay: '0.3s' }}>
+            <ProgressMonitor
+              operation={operation}
+              progress={getProgress()}
+            />
+          </div>
         </main>
 
         {/* Footer */}
-        <footer className="mt-12 pt-6 border-t border-gray-200 text-center text-sm text-gray-500">
-          <p>Sino Trade Article View Manager</p>
+        <footer className="mt-16 pt-8 border-t border-slate-200 dark:border-slate-800 text-center">
+          <p className="text-sm text-slate-500 dark:text-slate-400 font-light">
+            Sino Trade Article View Manager
+          </p>
+          <p className="text-xs text-slate-400 dark:text-slate-500 mt-2">
+            © 2025 Sino Trade. All rights reserved.
+          </p>
         </footer>
       </div>
     </div>

@@ -43,7 +43,7 @@ export function TabSelector({
   return (
     <div
       role="tablist"
-      className="flex gap-2 p-1 bg-gray-100 rounded-lg"
+      className="flex gap-3 p-2 bg-gradient-to-r from-slate-100 to-slate-200 dark:from-slate-800 dark:to-slate-900 rounded-2xl shadow-inner"
       aria-label="Article Channel Selection"
     >
       {channels.map((channel) => {
@@ -58,21 +58,22 @@ export function TabSelector({
             onClick={() => onChannelChange(channel.id)}
             className={`
               flex-1
-              min-h-[44px]
-              px-4 py-2
-              rounded-md
-              font-medium
+              min-h-[48px]
+              px-5 py-3
+              rounded-xl
+              font-semibold
               text-base
               transition-all
-              duration-150
+              duration-300
+              transform
               focus:outline-none
-              focus:ring-2
+              focus:ring-4
               focus:ring-offset-2
-              focus:ring-blue-500
+              focus:ring-blue-500/50
               ${
                 isActive
-                  ? 'bg-white text-blue-600 shadow-sm'
-                  : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900'
+                  ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-500/30 scale-105'
+                  : 'text-slate-700 dark:text-slate-300 hover:bg-white/60 dark:hover:bg-slate-700/60 hover:text-slate-900 dark:hover:text-slate-100 hover:shadow-md hover:scale-[1.02]'
               }
             `.trim().replace(/\s+/g, ' ')}
           >
