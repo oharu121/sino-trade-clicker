@@ -182,6 +182,10 @@ export async function POST(request: NextRequest): Promise<NextResponse<ArticlesR
     // Construct GraphQL variables
     const variables = {
       input: {
+        sort: {
+          order: "desc",
+          column: "updatedAt",
+        },
         channel: channelId,
         limit,
         page,
