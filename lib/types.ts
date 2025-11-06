@@ -18,6 +18,9 @@ export interface Article {
 
   /** Computed article URL for view boosting */
   url?: string;
+
+  /** Total view count from media analytics */
+  totalView?: number;
 }
 
 /**
