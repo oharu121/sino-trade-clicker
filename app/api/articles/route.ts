@@ -31,6 +31,9 @@ interface ArticlesRequest {
 interface Article {
   _id: string;
   title: string;
+  media?: {
+    totalView?: number;
+  };
 }
 
 /**
@@ -50,6 +53,9 @@ query ($input: clientGetContentListInput) {
     filtered {
       _id
       title
+      media {
+        totalView
+      }
     }
   }
 }
@@ -197,7 +203,11 @@ export async function POST(request: NextRequest): Promise<NextResponse<ArticlesR
     const data = await fetchWithRetry(GRAPHQL_ENDPOINT, variables);
 
     // Transform response
-    const articles = data.filtered.map(({ _id, title }) => ({ _id, title }));
+    const articles = data.filtered.map(({ _id, title, media }) => ({
+      _id,
+      title,
+      totalView: media?.totalView
+    }));
 
     return NextResponse.json({
       articles,
