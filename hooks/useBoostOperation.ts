@@ -19,7 +19,8 @@ type BoostAction =
   | { type: 'RESET' }
   | { type: 'UPDATE_PROGRESS'; payload: BoostProgress }
   | { type: 'COMPLETE' }
-  | { type: 'ERROR'; payload: string };
+  | { type: 'ERROR'; payload: string }
+  | { type: 'AUTO_STOP'; payload: { reason: string; consecutiveFailures: number } };
 
 /**
  * Initial boost operation state
@@ -35,6 +36,7 @@ const initialState: BoostOperation = {
     current: 0,
     success: 0,
     failed: 0,
+    consecutiveFailures: 0,
     responseTimes: [],
     averageResponseTime: 0,
   },
@@ -92,7 +94,7 @@ function boostReducer(state: BoostOperation, action: BoostAction): BoostOperatio
       return initialState;
 
     case 'UPDATE_PROGRESS': {
-      const { current, success: isSuccess, responseTime } = action.payload;
+      const { current, success: isSuccess, responseTime, consecutiveFailures } = action.payload;
 
       const newResponseTimes = [...state.metrics.responseTimes, responseTime];
       const newSuccess = state.metrics.success + (isSuccess ? 1 : 0);
@@ -104,6 +106,7 @@ function boostReducer(state: BoostOperation, action: BoostAction): BoostOperatio
           current: current + 1, // Increment current count
           success: newSuccess,
           failed: newFailed,
+          consecutiveFailures,
           responseTimes: newResponseTimes,
           averageResponseTime: calculateAverageResponseTime(newResponseTimes),
         },
@@ -132,6 +135,17 @@ function boostReducer(state: BoostOperation, action: BoostAction): BoostOperatio
         ...state,
         status: 'error',
         error: action.payload,
+        timing: {
+          ...state.timing,
+          endTime: Date.now(),
+        },
+      };
+
+    case 'AUTO_STOP':
+      return {
+        ...state,
+        status: 'error',
+        error: `自動停止：${action.payload.reason} (連續失敗 ${action.payload.consecutiveFailures} 次)`,
         timing: {
           ...state.timing,
           endTime: Date.now(),
@@ -236,6 +250,10 @@ export function useBoostOperation(): UseBoostOperationReturn {
         },
         onError: (error: string) => {
           dispatch({ type: 'ERROR', payload: error });
+          controllerRef.current = null;
+        },
+        onAutoStop: (reason: string, consecutiveFailures: number) => {
+          dispatch({ type: 'AUTO_STOP', payload: { reason, consecutiveFailures } });
           controllerRef.current = null;
         },
       }

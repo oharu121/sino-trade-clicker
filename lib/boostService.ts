@@ -38,6 +38,8 @@ export interface BoostProgress {
   statusCode?: number;
   /** Error message (if failed) */
   error?: string;
+  /** Consecutive failures counter */
+  consecutiveFailures: number;
 }
 
 /**
@@ -50,6 +52,8 @@ export interface BoostCallbacks {
   onComplete?: () => void;
   /** Called on critical error */
   onError?: (error: string) => void;
+  /** Called when auto-stopped due to consecutive failures */
+  onAutoStop?: (reason: string, consecutiveFailures: number) => void;
 }
 
 /**
@@ -156,7 +160,7 @@ async function sendViewRequest(
  */
 export function startBoost(config: BoostConfig, callbacks: BoostCallbacks = {}): BoostController {
   const { article, count, interval } = config;
-  const { onProgress, onComplete, onError: _onError } = callbacks;
+  const { onProgress, onComplete, onError: _onError, onAutoStop } = callbacks;
 
   // Build article URL with channel ID for correct path
   const articleUrl = buildArticleUrl(article, article.channelId);
@@ -168,6 +172,10 @@ export function startBoost(config: BoostConfig, callbacks: BoostCallbacks = {}):
   let currentTimer: TimerHandle | null = null;
   let expectedTime = Date.now() + interval;
 
+  // Consecutive failure tracking
+  let consecutiveFailures = 0;
+  const MAX_CONSECUTIVE_FAILURES = 3;
+
   /**
    * Execute a single request
    */
@@ -177,14 +185,24 @@ export function startBoost(config: BoostConfig, callbacks: BoostCallbacks = {}):
     const requestIndex = currentIndex;
     const userAgent = getRandomUserAgent();
 
+    let success = false;
+    let responseTime = 0;
+    let statusCode: number | undefined;
+    let error: string | undefined;
+
     try {
-      const { responseTime, statusCode, success, error } = await sendViewRequest(
+      const result = await sendViewRequest(
         articleUrl,
         article.title,
         userAgent
       );
 
       if (isCancelled) return;
+
+      success = result.success;
+      responseTime = result.responseTime;
+      statusCode = result.statusCode;
+      error = result.error;
 
       onProgress?.({
         current: requestIndex,
@@ -193,19 +211,55 @@ export function startBoost(config: BoostConfig, callbacks: BoostCallbacks = {}):
         responseTime,
         statusCode,
         error,
+        consecutiveFailures,
       });
     } catch (err: unknown) {
       if (isCancelled) return;
 
       const errorData = err as { responseTime: number; error: string; success: boolean };
 
+      success = errorData.success || false;
+      responseTime = errorData.responseTime;
+      error = errorData.error;
+
       onProgress?.({
         current: requestIndex,
         total: count,
-        success: errorData.success || false,
-        responseTime: errorData.responseTime,
+        success,
+        responseTime,
         error: errorData.error,
+        consecutiveFailures,
       });
+    }
+
+    // Track consecutive failures
+    if (!success) {
+      consecutiveFailures++;
+
+      // Auto-stop if too many consecutive failures
+      if (consecutiveFailures >= MAX_CONSECUTIVE_FAILURES) {
+        isCancelled = true;
+        currentTimer?.cancel();
+        currentTimer = null;
+
+        // Determine failure reason based on error or status code
+        let reason = '連續失敗次數過多';
+        if (statusCode === 404) {
+          reason = '文章不存在 (404)';
+        } else if (statusCode === 429) {
+          reason = '請求過於頻繁 (429)';
+        } else if (error?.includes('WAF') || error?.includes('防火牆')) {
+          reason = '被防火牆阻擋';
+        } else if (error?.includes('timeout') || error?.includes('超時')) {
+          reason = '請求超時';
+        }
+
+        onAutoStop?.(reason, consecutiveFailures);
+        return;
+      }
+    } else {
+      // Reset counter on success
+      consecutiveFailures = 0;
     }
 
     // Schedule next request

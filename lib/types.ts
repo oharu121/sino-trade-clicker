@@ -81,6 +81,9 @@ export interface BoostOperation {
     /** Failed requests (errors, non-2xx) */
     failed: number;
 
+    /** Consecutive failures counter */
+    consecutiveFailures: number;
+
     /** Array of response times in milliseconds */
     responseTimes: number[];
 

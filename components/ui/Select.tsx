@@ -186,7 +186,8 @@ export function Select({
         aria-haspopup="listbox"
         aria-expanded={isOpen}
         className={`
-          min-h-[48px]
+          relative
+          min-h-12
           w-full
           px-4 py-3
           rounded-xl
@@ -215,7 +216,7 @@ export function Select({
             ? selectedOption.label
             : placeholder}
         </span>
-        <span className="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none">
+        <span className="absolute top-1/2 -translate-y-1/2 right-0 flex items-center pr-4 pointer-events-none">
           <svg
             className={`w-5 h-5 text-slate-400 dark:text-slate-500 transition-transform duration-300 ${
               isOpen ? 'rotate-180' : ''
@@ -236,7 +237,7 @@ export function Select({
 
       {error && (
         <div className="flex items-start gap-2 mt-2">
-          <svg className="w-4 h-4 text-red-600 dark:text-red-500 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+          <svg className="w-4 h-4 text-red-600 dark:text-red-500 shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
             <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
           </svg>
           <span className="text-sm font-medium text-red-700 dark:text-red-400" role="alert">
@@ -289,7 +290,7 @@ export function Select({
                   className={`
                     px-4 py-3 cursor-pointer transition-all duration-150 text-sm font-medium
                     ${option.value === value
-                      ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-md'
+                      ? 'bg-linear-to-r from-blue-600 to-indigo-600 text-white shadow-md'
                       : 'text-slate-700 dark:text-slate-300'
                     }
                     ${index === focusedIndex && option.value !== value

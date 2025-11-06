@@ -43,20 +43,28 @@ export function ProgressMonitor({
   const monitorRef = useRef<HTMLDivElement>(null);
   const lastCurrentRef = useRef<number>(0);
   const lastStatusRef = useRef<string>('idle');
+  const hasScrolledToMonitorRef = useRef<boolean>(false);
 
-  // Auto-scroll to monitor when operation starts
+  // Auto-scroll to monitor ONCE when operation starts
   useEffect(() => {
-    if (operation.status === 'running' && monitorRef.current) {
+    if (operation.status === 'running' && !hasScrolledToMonitorRef.current && monitorRef.current) {
       monitorRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      hasScrolledToMonitorRef.current = true;
+    } else if (operation.status === 'idle') {
+      // Reset flag when operation is reset
+      hasScrolledToMonitorRef.current = false;
     }
   }, [operation.status]);
 
-  // Auto-scroll activity log to bottom
+  // Disable auto-scroll activity log during execution to prevent fighting user scrolling
+  // Only auto-scroll when operation completes or errors
   useEffect(() => {
-    if (logEndRef.current) {
+    const shouldAutoScroll = operation.status === 'completed' || operation.status === 'error';
+
+    if (shouldAutoScroll && logEndRef.current) {
       logEndRef.current.scrollIntoView({ behavior: 'smooth' });
     }
-  }, [activityLog]);
+  }, [activityLog, operation.status]);
 
   // Generate activity log entries
   useEffect(() => {
@@ -83,7 +91,22 @@ export function ProgressMonitor({
                        metrics.failed > 0 && metrics.current === lastCurrentRef.current + 1;
 
       if (shouldLog) {
-        const logType: LogType = metrics.failed > metrics.success * 0.2 ? 'warning' : 'success';
+        const failureRate = metrics.current > 0 ? metrics.failed / metrics.current : 0;
+        let logType: LogType = 'success';
+        let message = `已完成 ${metrics.current}/${config.count} 次請求 (成功: ${metrics.success}, 失敗: ${metrics.failed})`;
+
+        // Determine log type based on consecutive failures and failure rate
+        if (metrics.consecutiveFailures >= 2) {
+          logType = 'error';
+          message = `⚠️ 連續失敗 ${metrics.consecutiveFailures} 次！已完成 ${metrics.current}/${config.count} (成功: ${metrics.success}, 失敗: ${metrics.failed})`;
+        } else if (failureRate > 0.5) {
+          logType = 'error';
+          message = `❌ 失敗率過高！已完成 ${metrics.current}/${config.count} (成功: ${metrics.success}, 失敗: ${metrics.failed})`;
+        } else if (failureRate > 0.2 || metrics.consecutiveFailures >= 1) {
+          logType = 'warning';
+          message = `⚠️ 已完成 ${metrics.current}/${config.count} 次請求 (成功: ${metrics.success}, 失敗: ${metrics.failed})`;
+        }
+
         const timestamp = Date.now();
         setActivityLog(prev => [
           ...prev.slice(-49), // Keep last 49 entries + new one = 50 total
@@ -91,12 +114,14 @@ export function ProgressMonitor({
             id: `${timestamp}-${Math.random().toString(36).substr(2, 9)}`,
             timestamp,
             type: logType,
-            message: `已完成 ${metrics.current}/${config.count} 次請求 (成功: ${metrics.success}, 失敗: ${metrics.failed})`,
+            message,
             metadata: {
               current: metrics.current,
               success: metrics.success,
               failed: metrics.failed,
+              consecutiveFailures: metrics.consecutiveFailures,
               avgResponseTime: metrics.averageResponseTime,
+              failureRate: Math.round(failureRate * 100),
             },
           },
         ]);
@@ -218,6 +243,23 @@ export function ProgressMonitor({
         />
       </div>
 
+      {/* Consecutive Failures Warning */}
+      {operation.status === 'running' && operation.metrics.consecutiveFailures >= 2 && (
+        <div className="relative overflow-hidden animate-pulse">
+          <div className="absolute inset-0 bg-gradient-to-r from-yellow-500 to-orange-600 opacity-10"></div>
+          <div className="relative p-3 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm border-2 border-yellow-500 dark:border-yellow-600 rounded-xl shadow-lg">
+            <div className="flex items-center gap-2">
+              <svg className="w-5 h-5 text-yellow-600 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+              </svg>
+              <p className="text-sm font-semibold text-yellow-800 dark:text-yellow-300">
+                警告：連續失敗 {operation.metrics.consecutiveFailures} 次 (達到 3 次將自動停止)
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Stats Grid */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
         <div className="relative overflow-hidden group">
@@ -334,9 +376,36 @@ export function ProgressMonitor({
               <svg className="w-6 h-6 text-red-600 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
               </svg>
-              <div>
+              <div className="flex-1">
                 <h4 className="text-sm font-bold text-red-900 dark:text-red-300 mb-1">發生錯誤</h4>
-                <p className="text-sm text-red-700 dark:text-red-400">{operation.error}</p>
+                <p className="text-sm text-red-700 dark:text-red-400 mb-2">{operation.error}</p>
+
+                {/* Helpful suggestions based on error type */}
+                {operation.error.includes('404') && (
+                  <div className="mt-2 p-2 bg-red-50 dark:bg-red-900/20 rounded border border-red-200 dark:border-red-800">
+                    <p className="text-xs text-red-800 dark:text-red-300">💡 建議：文章可能已被刪除或URL不正確</p>
+                  </div>
+                )}
+                {operation.error.includes('429') && (
+                  <div className="mt-2 p-2 bg-red-50 dark:bg-red-900/20 rounded border border-red-200 dark:border-red-800">
+                    <p className="text-xs text-red-800 dark:text-red-300">💡 建議：請求頻率過高，請增加間隔時間（建議 &gt;500ms）</p>
+                  </div>
+                )}
+                {(operation.error.includes('WAF') || operation.error.includes('防火牆')) && (
+                  <div className="mt-2 p-2 bg-red-50 dark:bg-red-900/20 rounded border border-red-200 dark:border-red-800">
+                    <p className="text-xs text-red-800 dark:text-red-300">💡 建議：被防火牆阻擋，請稍後再試或聯繫管理員</p>
+                  </div>
+                )}
+                {(operation.error.includes('timeout') || operation.error.includes('超時')) && (
+                  <div className="mt-2 p-2 bg-red-50 dark:bg-red-900/20 rounded border border-red-200 dark:border-red-800">
+                    <p className="text-xs text-red-800 dark:text-red-300">💡 建議：網路連線逾時，請檢查網路狀態或增加間隔時間</p>
+                  </div>
+                )}
+                {operation.error.includes('連續失敗') && !operation.error.includes('404') && !operation.error.includes('429') && (
+                  <div className="mt-2 p-2 bg-red-50 dark:bg-red-900/20 rounded border border-red-200 dark:border-red-800">
+                    <p className="text-xs text-red-800 dark:text-red-300">💡 建議：連續失敗可能表示伺服器問題或網路不穩定，請稍後再試</p>
+                  </div>
+                )}
               </div>
             </div>
           </div>
