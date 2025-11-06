@@ -77,7 +77,7 @@ export default function Home() {
       const fetchedArticles = await fetchArticlesByChannel(currentChannel.channelId, {
         limit: 100,
         page: 0,
-        skip: 1,
+        skip: 0,
       });
 
       // Apply title filter if provided
