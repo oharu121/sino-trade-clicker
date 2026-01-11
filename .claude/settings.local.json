@@ -5,7 +5,9 @@
       "Bash(npm test:*)",
       "Bash(npm run build:*)",
       "Bash(dir:*)",
-      "Bash(find:*)"
+      "Bash(find:*)",
+      "Bash(npm run lint)",
+      "Bash(npm run typecheck:*)"
     ],
     "deny": [],
     "ask": []

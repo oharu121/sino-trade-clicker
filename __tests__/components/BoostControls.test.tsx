@@ -3,6 +3,7 @@
  * @module __tests__/components/BoostControls.test
  */
 
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
@@ -15,13 +16,13 @@ describe('BoostControls', () => {
     title: '測試文章標題',
   };
 
-  const mockOnStart = jest.fn();
-  const mockOnPause = jest.fn();
-  const mockOnResume = jest.fn();
-  const mockOnReset = jest.fn();
+  const mockOnStart = vi.fn();
+  const mockOnPause = vi.fn();
+  const mockOnResume = vi.fn();
+  const mockOnReset = vi.fn();
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   describe('Idle State', () => {

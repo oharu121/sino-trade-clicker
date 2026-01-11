@@ -3,14 +3,15 @@
  * @module __tests__/components/ProgressMonitor.test
  */
 
+import { describe, it, expect, beforeAll, vi } from 'vitest';
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { ProgressMonitor } from '@/components/ProgressMonitor';
 import type { BoostOperation } from '@/lib/types';
 
-// Mock scrollIntoView which is not available in Jest DOM
+// Mock scrollIntoView which is not available in jsdom
 beforeAll(() => {
-  Element.prototype.scrollIntoView = jest.fn();
+  Element.prototype.scrollIntoView = vi.fn();
 });
 
 const createMockOperation = (overrides?: Partial<BoostOperation>): BoostOperation => ({
@@ -24,12 +25,15 @@ const createMockOperation = (overrides?: Partial<BoostOperation>): BoostOperatio
     current: 0,
     success: 0,
     failed: 0,
+    consecutiveFailures: 0,
+    responseTimes: [],
     averageResponseTime: 0,
   },
   timing: {
     startTime: null,
     endTime: null,
     duration: 0,
+    pausedDuration: 0,
   },
   error: null,
   ...overrides,
@@ -64,6 +68,8 @@ describe('ProgressMonitor', () => {
         current: 50,
         success: 45,
         failed: 5,
+        consecutiveFailures: 0,
+        responseTimes: [],
         averageResponseTime: 250,
       },
     });
@@ -107,8 +113,8 @@ describe('ProgressMonitor', () => {
 
     const { container } = render(<ProgressMonitor operation={operation} progress={50} />);
 
-    // Primary variant uses blue color
-    const progressBar = container.querySelector('.bg-blue-600');
+    // Primary variant uses blue gradient
+    const progressBar = container.querySelector('.from-blue-600');
     expect(progressBar).toBeInTheDocument();
   });
 
@@ -120,14 +126,16 @@ describe('ProgressMonitor', () => {
         current: 100,
         success: 100,
         failed: 0,
+        consecutiveFailures: 0,
+        responseTimes: [],
         averageResponseTime: 250,
       },
     });
 
     const { container } = render(<ProgressMonitor operation={operation} progress={100} />);
 
-    // Success variant uses green color
-    const progressBar = container.querySelector('.bg-green-600');
+    // Success variant uses emerald/green gradient
+    const progressBar = container.querySelector('.from-emerald-600');
     expect(progressBar).toBeInTheDocument();
   });
 
@@ -139,8 +147,8 @@ describe('ProgressMonitor', () => {
 
     const { container } = render(<ProgressMonitor operation={operation} progress={25} />);
 
-    // Warning variant uses yellow color
-    const progressBar = container.querySelector('.bg-yellow-600');
+    // Warning variant uses amber/orange gradient
+    const progressBar = container.querySelector('.from-amber-600');
     expect(progressBar).toBeInTheDocument();
   });
 
@@ -153,8 +161,8 @@ describe('ProgressMonitor', () => {
 
     const { container } = render(<ProgressMonitor operation={operation} progress={15} />);
 
-    // Error variant uses red color
-    const progressBar = container.querySelector('.bg-red-600');
+    // Error variant uses red gradient
+    const progressBar = container.querySelector('.from-red-600');
     expect(progressBar).toBeInTheDocument();
   });
 
@@ -204,6 +212,8 @@ describe('ProgressMonitor', () => {
         current: 25,
         success: 20,
         failed: 5,
+        consecutiveFailures: 0,
+        responseTimes: [],
         averageResponseTime: 300,
       },
     });
@@ -220,6 +230,8 @@ describe('ProgressMonitor', () => {
         current: 75,
         success: 70,
         failed: 5,
+        consecutiveFailures: 0,
+        responseTimes: [],
         averageResponseTime: 280,
       },
     });
@@ -238,8 +250,8 @@ describe('ProgressMonitor', () => {
 
     const { container } = render(<ProgressMonitor operation={operation} progress={50} />);
 
-    // Should not have error message box with border-red-200
-    const errorMessageBox = container.querySelector('.border-red-200');
+    // Should not have error message box with border-red-500
+    const errorMessageBox = container.querySelector('.border-red-500');
     expect(errorMessageBox).not.toBeInTheDocument();
   });
 
@@ -251,11 +263,11 @@ describe('ProgressMonitor', () => {
 
     const { container } = render(<ProgressMonitor operation={operation} progress={50} />);
 
-    // Check for stat cards: gray (current), green (success), red (failed), blue (avg response)
-    expect(container.querySelector('.bg-gray-50')).toBeInTheDocument();
-    expect(container.querySelector('.bg-green-50')).toBeInTheDocument();
-    expect(container.querySelector('.bg-red-50')).toBeInTheDocument();
-    expect(container.querySelector('.bg-blue-50')).toBeInTheDocument();
+    // Check for stat cards using gradient backgrounds
+    expect(container.querySelector('.from-slate-500\\/10')).toBeInTheDocument();
+    expect(container.querySelector('.from-emerald-500\\/10')).toBeInTheDocument();
+    expect(container.querySelector('.from-red-500\\/10')).toBeInTheDocument();
+    expect(container.querySelector('.from-blue-500\\/10')).toBeInTheDocument();
   });
 
   it('should display zero values correctly', () => {
@@ -266,6 +278,8 @@ describe('ProgressMonitor', () => {
         current: 0,
         success: 0,
         failed: 0,
+        consecutiveFailures: 0,
+        responseTimes: [],
         averageResponseTime: 0,
       },
     });

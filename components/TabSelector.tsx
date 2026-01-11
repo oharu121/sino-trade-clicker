@@ -43,7 +43,7 @@ export function TabSelector({
   return (
     <div
       role="tablist"
-      className="flex gap-3 p-2 bg-gradient-to-r from-slate-100 to-slate-200 dark:from-slate-800 dark:to-slate-900 rounded-2xl shadow-inner"
+      className="flex gap-3 p-2 bg-linear-to-r from-slate-100 to-slate-200 dark:from-slate-800 dark:to-slate-900 rounded-2xl shadow-inner"
       aria-label="Article Channel Selection"
     >
       {channels.map((channel) => {
@@ -72,7 +72,7 @@ export function TabSelector({
               focus:ring-blue-500/50
               ${
                 isActive
-                  ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-500/30 scale-105'
+                  ? 'bg-linear-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-500/30 scale-105'
                   : 'text-slate-700 dark:text-slate-300 hover:bg-white/60 dark:hover:bg-slate-700/60 hover:text-slate-900 dark:hover:text-slate-100 hover:shadow-md hover:scale-[1.02]'
               }
             `.trim().replace(/\s+/g, ' ')}

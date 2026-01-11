@@ -3,6 +3,7 @@
  * @module __tests__/lib/urlBuilder.test
  */
 
+import { describe, it, expect } from 'vitest';
 import { sanitizeTitle, buildArticleUrl } from '@/lib/utils/urlBuilder';
 import type { Article } from '@/lib/types';
 

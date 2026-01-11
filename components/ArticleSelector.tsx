@@ -56,7 +56,6 @@ export function ArticleSelector({
   error,
   selectedArticle,
   onArticleSelect,
-  autoFocus: _autoFocus = false,
 }: ArticleSelectorProps) {
   // Convert articles to select options with view count badges
   const options = articles.map((article) => ({

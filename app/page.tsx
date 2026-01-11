@@ -139,16 +139,16 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-950 dark:via-blue-950 dark:to-indigo-950">
+    <div className="min-h-screen bg-linear-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-950 dark:via-blue-950 dark:to-indigo-950">
       <div className="max-w-4xl mx-auto px-4 py-12 sm:px-6 lg:px-8">
         {/* Header */}
         <header className="mb-12 text-center animate-fade-in">
-          <div className="inline-block mb-4 px-4 py-1.5 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full">
+          <div className="inline-block mb-4 px-4 py-1.5 bg-linear-to-r from-blue-500 to-indigo-600 rounded-full">
             <span className="text-xs font-semibold text-white tracking-wide uppercase">
               Sino Trade Platform
             </span>
           </div>
-          <h1 className="text-5xl sm:text-6xl font-extrabold mb-4 bg-gradient-to-r from-slate-900 via-blue-800 to-indigo-900 dark:from-slate-100 dark:via-blue-200 dark:to-indigo-200 bg-clip-text text-transparent leading-tight">
+          <h1 className="text-5xl sm:text-6xl font-extrabold mb-4 bg-linear-to-r from-slate-900 via-blue-800 to-indigo-900 dark:from-slate-100 dark:via-blue-200 dark:to-indigo-200 bg-clip-text text-transparent leading-tight">
             文章瀏覽管理器
           </h1>
           <p className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto font-light">
@@ -183,10 +183,10 @@ export default function Home() {
           {/* Selected Article Display */}
           {selectedArticle && (
             <section className="relative overflow-hidden animate-scale-in">
-              <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-indigo-600 opacity-10"></div>
+              <div className="absolute inset-0 bg-linear-to-r from-blue-500 to-indigo-600 opacity-10"></div>
               <div className="relative p-6 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm border border-blue-200 dark:border-blue-800 rounded-2xl shadow-lg">
                 <div className="flex items-start gap-3">
-                  <div className="flex-shrink-0 w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center">
+                  <div className="shrink-0 w-10 h-10 bg-linear-to-br from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center">
                     <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                     </svg>
@@ -207,10 +207,10 @@ export default function Home() {
           {/* Boost Controls */}
           <section className="animate-slide-in" style={{ animationDelay: '0.2s' }}>
             <div className="relative overflow-hidden rounded-2xl shadow-xl">
-              <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-indigo-600/5"></div>
+              <div className="absolute inset-0 bg-linear-to-br from-blue-500/5 to-indigo-600/5"></div>
               <div className="relative p-8 bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm border border-slate-200 dark:border-slate-700">
                 <div className="flex items-center gap-3 mb-6">
-                  <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg">
+                  <div className="shrink-0 w-12 h-12 bg-linear-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg">
                     <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                     </svg>

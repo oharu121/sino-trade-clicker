@@ -3,6 +3,7 @@
  * @module __tests__/components/TabSelector.test
  */
 
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
@@ -10,10 +11,10 @@ import { TabSelector } from '@/components/TabSelector';
 import { CHANNELS, CHANNEL_LIST } from '@/lib/constants';
 
 describe('TabSelector', () => {
-  const mockOnChannelChange = jest.fn();
+  const mockOnChannelChange = vi.fn();
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('should render all channel tabs', () => {
@@ -107,12 +108,11 @@ describe('TabSelector', () => {
 
     const macroTab = screen.getByRole('tab', { name: '深談總經' });
 
-    // Check for min-h-[44px] class
-    expect(macroTab.className).toContain('min-h-[44px]');
+    // Check for min-h-[48px] class (touch target)
+    expect(macroTab.className).toContain('min-h-[48px]');
   });
 
   it('should switch active state correctly', async () => {
-    const _user = userEvent.setup();
     const { rerender } = render(
       <TabSelector
         channels={CHANNEL_LIST}
@@ -153,8 +153,6 @@ describe('TabSelector', () => {
         onChannelChange={mockOnChannelChange}
       />
     );
-
-    const _trumpTab = screen.getByRole('tab', { name: '川普專題' });
 
     // Tab to focus the element
     await user.tab();

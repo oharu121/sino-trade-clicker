@@ -3,15 +3,16 @@
  * @module __tests__/lib/articleService.test
  */
 
+import { describe, it, expect, beforeEach, vi, type Mock } from 'vitest';
 import { fetchArticlesByChannel, filterArticlesByTitle } from '@/lib/articleService';
 import type { Article } from '@/lib/types';
 
 // Mock fetch globally
-global.fetch = jest.fn();
+global.fetch = vi.fn();
 
 describe('articleService', () => {
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   describe('fetchArticlesByChannel', () => {
@@ -22,7 +23,7 @@ describe('articleService', () => {
     ];
 
     it('should fetch articles successfully', async () => {
-      (global.fetch as jest.Mock).mockResolvedValue({
+      (global.fetch as Mock).mockResolvedValue({
         ok: true,
         status: 200,
         json: async () => ({ articles: mockArticles, total: 3 }),
@@ -44,7 +45,7 @@ describe('articleService', () => {
     });
 
     it('should use custom options', async () => {
-      (global.fetch as jest.Mock).mockResolvedValue({
+      (global.fetch as Mock).mockResolvedValue({
         ok: true,
         status: 200,
         json: async () => ({ articles: [], total: 0 }),
@@ -69,7 +70,7 @@ describe('articleService', () => {
     });
 
     it('should throw error on API failure', async () => {
-      (global.fetch as jest.Mock).mockResolvedValue({
+      (global.fetch as Mock).mockResolvedValue({
         ok: false,
         status: 500,
         json: async () => ({ error: 'Internal Server Error', details: 'Database connection failed' }),
@@ -81,13 +82,13 @@ describe('articleService', () => {
     });
 
     it('should throw error for network failure', async () => {
-      (global.fetch as jest.Mock).mockRejectedValue(new Error('Network error'));
+      (global.fetch as Mock).mockRejectedValue(new Error('Network error'));
 
       await expect(fetchArticlesByChannel('6514f8b3b13f2760605fcef1')).rejects.toThrow('Network error');
     });
 
     it('should throw error for missing articles array', async () => {
-      (global.fetch as jest.Mock).mockResolvedValue({
+      (global.fetch as Mock).mockResolvedValue({
         ok: true,
         status: 200,
         json: async () => ({ total: 0 }), // Missing articles array
@@ -99,7 +100,7 @@ describe('articleService', () => {
     });
 
     it('should throw error for non-array articles', async () => {
-      (global.fetch as jest.Mock).mockResolvedValue({
+      (global.fetch as Mock).mockResolvedValue({
         ok: true,
         status: 200,
         json: async () => ({ articles: 'not-an-array' }),
@@ -111,7 +112,7 @@ describe('articleService', () => {
     });
 
     it('should validate article structure', async () => {
-      (global.fetch as jest.Mock).mockResolvedValue({
+      (global.fetch as Mock).mockResolvedValue({
         ok: true,
         status: 200,
         json: async () => ({
@@ -128,7 +129,7 @@ describe('articleService', () => {
     });
 
     it('should validate article title', async () => {
-      (global.fetch as jest.Mock).mockResolvedValue({
+      (global.fetch as Mock).mockResolvedValue({
         ok: true,
         status: 200,
         json: async () => ({
@@ -144,7 +145,7 @@ describe('articleService', () => {
     });
 
     it('should handle empty response', async () => {
-      (global.fetch as jest.Mock).mockResolvedValue({
+      (global.fetch as Mock).mockResolvedValue({
         ok: true,
         status: 200,
         json: async () => ({ articles: [], total: 0 }),

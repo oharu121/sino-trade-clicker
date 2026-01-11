@@ -280,13 +280,8 @@ export function useBoostOperation(): UseBoostOperationReturn {
     if (controllerRef.current && state.status === 'paused') {
       controllerRef.current.resume();
 
-      // Track paused duration
-      if (pauseStartTimeRef.current) {
-        const _pausedTime = Date.now() - pauseStartTimeRef.current;
-        // Update timing state with paused duration
-        // Note: We should add an action for this in a full implementation
-        pauseStartTimeRef.current = null;
-      }
+      // Reset pause tracking
+      pauseStartTimeRef.current = null;
 
       dispatch({ type: 'RESUME' });
     }

@@ -3,6 +3,7 @@
  * @module __tests__/components/ui/ProgressBar.test
  */
 
+import { describe, it, expect } from 'vitest';
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { ProgressBar } from '@/components/ui/ProgressBar';
@@ -52,28 +53,28 @@ describe('ProgressBar', () => {
   it('should apply primary variant by default', () => {
     const { container } = render(<ProgressBar value={50} />);
 
-    const bar = container.querySelector('.bg-blue-600');
+    const bar = container.querySelector('.from-blue-600');
     expect(bar).toBeInTheDocument();
   });
 
   it('should apply success variant', () => {
     const { container } = render(<ProgressBar value={100} variant="success" />);
 
-    const bar = container.querySelector('.bg-green-600');
+    const bar = container.querySelector('.from-emerald-600');
     expect(bar).toBeInTheDocument();
   });
 
   it('should apply warning variant', () => {
     const { container } = render(<ProgressBar value={50} variant="warning" />);
 
-    const bar = container.querySelector('.bg-yellow-600');
+    const bar = container.querySelector('.from-amber-600');
     expect(bar).toBeInTheDocument();
   });
 
   it('should apply error variant', () => {
     const { container } = render(<ProgressBar value={30} variant="error" />);
 
-    const bar = container.querySelector('.bg-red-600');
+    const bar = container.querySelector('.from-red-600');
     expect(bar).toBeInTheDocument();
   });
 
@@ -94,7 +95,7 @@ describe('ProgressBar', () => {
   it('should apply large size', () => {
     const { container } = render(<ProgressBar value={50} size="lg" />);
 
-    const bar = container.querySelector('.h-6');
+    const bar = container.querySelector('.h-8');
     expect(bar).toBeInTheDocument();
   });
 
@@ -113,7 +114,7 @@ describe('ProgressBar', () => {
     expect(labelPercentage).toBeInTheDocument();
 
     // The bar should not contain the percentage text (no white text inside)
-    const bar = container.querySelector('.bg-blue-600');
+    const bar = container.querySelector('.from-blue-600');
     expect(bar?.textContent).toBe('');
   });
 

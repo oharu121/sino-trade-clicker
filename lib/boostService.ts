@@ -160,7 +160,7 @@ async function sendViewRequest(
  */
 export function startBoost(config: BoostConfig, callbacks: BoostCallbacks = {}): BoostController {
   const { article, count, interval } = config;
-  const { onProgress, onComplete, onError: _onError, onAutoStop } = callbacks;
+  const { onProgress, onComplete, onAutoStop } = callbacks;
 
   // Build article URL with channel ID for correct path
   const articleUrl = buildArticleUrl(article, article.channelId);

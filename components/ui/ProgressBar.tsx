@@ -59,10 +59,10 @@ export function ProgressBar({
 
   // Color classes with gradients
   const colorClasses = {
-    primary: 'bg-gradient-to-r from-blue-600 to-indigo-600',
-    success: 'bg-gradient-to-r from-emerald-600 to-green-600',
-    warning: 'bg-gradient-to-r from-amber-600 to-orange-600',
-    error: 'bg-gradient-to-r from-red-600 to-rose-600',
+    primary: 'bg-linear-to-r from-blue-600 to-indigo-600',
+    success: 'bg-linear-to-r from-emerald-600 to-green-600',
+    warning: 'bg-linear-to-r from-amber-600 to-orange-600',
+    error: 'bg-linear-to-r from-red-600 to-rose-600',
   };
 
   // Glow effects
@@ -94,7 +94,7 @@ export function ProgressBar({
       )}
 
       <div
-        className={`w-full bg-gradient-to-r from-slate-200 to-slate-300 dark:from-slate-700 dark:to-slate-600 rounded-full overflow-hidden shadow-inner ${heightClasses[size]}`}
+        className={`w-full bg-linear-to-r from-slate-200 to-slate-300 dark:from-slate-700 dark:to-slate-600 rounded-full overflow-hidden shadow-inner ${heightClasses[size]}`}
         role="progressbar"
         aria-valuenow={clampedValue}
         aria-valuemin={0}
@@ -106,7 +106,7 @@ export function ProgressBar({
           style={{ width: `${clampedValue}%` }}
         >
           {/* Animated shimmer effect */}
-          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-shimmer" style={{ backgroundSize: '200% 100%' }}></div>
+          <div className="absolute inset-0 bg-linear-to-r from-transparent via-white/20 to-transparent animate-shimmer" style={{ backgroundSize: '200% 100%' }}></div>
 
           {showPercentage && size === 'lg' && clampedValue > 10 && (
             <span className={`${textSizeClasses[size]} font-bold text-white drop-shadow-lg relative z-10`}>

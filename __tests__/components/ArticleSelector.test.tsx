@@ -3,6 +3,7 @@
  * @module __tests__/components/ArticleSelector.test
  */
 
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
@@ -16,11 +17,11 @@ const mockArticles: Article[] = [
 ];
 
 describe('ArticleSelector', () => {
-  const mockOnArticleSelect = jest.fn();
+  const mockOnArticleSelect = vi.fn();
   const channelId = '6514f8b3b13f2760605fcef1';
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('should show loading state when loading is true', () => {
@@ -158,8 +159,8 @@ describe('ArticleSelector', () => {
     const selectButton = screen.getByRole('button');
     await user.click(selectButton);
 
-    // Search input should be visible
-    const searchInput = await screen.findByPlaceholderText('Search...');
+    // Search input should be visible (uses Chinese placeholder)
+    const searchInput = await screen.findByPlaceholderText('搜尋...');
     expect(searchInput).toBeInTheDocument();
   });
 

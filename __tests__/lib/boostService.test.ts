@@ -3,19 +3,20 @@
  * @module __tests__/lib/boostService.test
  */
 
+import { describe, it, expect, beforeEach, vi, type Mock } from 'vitest';
 import { startBoost, type BoostConfig, type BoostProgress } from '@/lib/boostService';
 import type { Article } from '@/lib/types';
 
 // Mock fetch globally
-global.fetch = jest.fn();
+global.fetch = vi.fn();
 
 // Mock timing utility to avoid delays in tests
-jest.mock('@/lib/utils/timing', () => ({
-  scheduleAccurate: jest.fn((callback: () => void) => {
+vi.mock('@/lib/utils/timing', () => ({
+  scheduleAccurate: vi.fn((callback: () => void) => {
     // Execute immediately in tests
     setTimeout(callback, 0);
     return {
-      cancel: jest.fn(),
+      cancel: vi.fn(),
     };
   }),
 }));
@@ -27,9 +28,9 @@ describe('boostService', () => {
   };
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     // Mock backend proxy response
-    (global.fetch as jest.Mock).mockResolvedValue({
+    (global.fetch as Mock).mockResolvedValue({
       ok: true,
       json: async () => ({
         success: true,
@@ -88,12 +89,12 @@ describe('boostService', () => {
       });
 
       expect(firstProgressCall).not.toBeNull();
-      expect(firstProgressCall?.total).toBe(10);
+      expect(firstProgressCall!.total).toBe(10);
     });
 
     it('should report success for 2xx responses', async () => {
       // Mock should already be set in beforeEach, but let's be explicit
-      (global.fetch as jest.Mock).mockResolvedValue({
+      (global.fetch as Mock).mockResolvedValue({
         ok: true,
         json: async () => ({
           success: true,
@@ -121,12 +122,12 @@ describe('boostService', () => {
         });
       });
 
-      expect(capturedProgress?.success).toBe(true);
-      expect(capturedProgress?.statusCode).toBe(200);
+      expect(capturedProgress!.success).toBe(true);
+      expect(capturedProgress!.statusCode).toBe(200);
     });
 
     it('should report failure for non-2xx responses', async () => {
-      (global.fetch as jest.Mock).mockResolvedValue({
+      (global.fetch as Mock).mockResolvedValue({
         ok: true,
         json: async () => ({
           success: false,
@@ -155,12 +156,12 @@ describe('boostService', () => {
         });
       });
 
-      expect(capturedProgress?.success).toBe(false);
-      expect(capturedProgress?.statusCode).toBe(500);
+      expect(capturedProgress!.success).toBe(false);
+      expect(capturedProgress!.statusCode).toBe(500);
     });
 
     it('should report failure for network errors', async () => {
-      (global.fetch as jest.Mock).mockRejectedValue(new Error('Network error'));
+      (global.fetch as Mock).mockRejectedValue(new Error('Network error'));
 
       const config: BoostConfig = {
         article: mockArticle,
@@ -181,8 +182,8 @@ describe('boostService', () => {
         });
       });
 
-      expect(capturedProgress?.success).toBe(false);
-      expect(capturedProgress?.error).toContain('Network error');
+      expect(capturedProgress!.success).toBe(false);
+      expect(capturedProgress!.error).toContain('Network error');
     });
 
     it('should include response time in progress', async () => {
@@ -205,8 +206,8 @@ describe('boostService', () => {
         });
       });
 
-      expect(capturedProgress?.responseTime).toBeGreaterThanOrEqual(0);
-      expect(typeof capturedProgress?.responseTime).toBe('number');
+      expect(capturedProgress!.responseTime).toBeGreaterThanOrEqual(0);
+      expect(typeof capturedProgress!.responseTime).toBe('number');
     });
 
     it('should call onComplete when all requests finish', async () => {
@@ -216,7 +217,7 @@ describe('boostService', () => {
         interval: 300,
       };
 
-      const onComplete = jest.fn();
+      const onComplete = vi.fn();
 
       await new Promise<void>((resolve) => {
         startBoost(config, {
@@ -248,7 +249,7 @@ describe('boostService', () => {
       expect(global.fetch).toHaveBeenCalledTimes(3);
 
       // Check that requests are sent to backend proxy with User-Agent in body
-      const calls = (global.fetch as jest.Mock).mock.calls;
+      const calls = (global.fetch as Mock).mock.calls;
       calls.forEach((call) => {
         expect(call[0]).toBe('/api/boost-view');
         const options = call[1];
@@ -273,7 +274,7 @@ describe('boostService', () => {
         });
       });
 
-      const calls = (global.fetch as jest.Mock).mock.calls;
+      const calls = (global.fetch as Mock).mock.calls;
       expect(calls[0][0]).toBe('/api/boost-view');
 
       const options = calls[0][1];
