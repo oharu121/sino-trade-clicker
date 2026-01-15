@@ -79,7 +79,9 @@ describe('ProgressMonitor', () => {
     expect(screen.getByText('50')).toBeInTheDocument(); // current
     expect(screen.getByText('45')).toBeInTheDocument(); // success
     expect(screen.getByText('5')).toBeInTheDocument();  // failed
-    expect(screen.getByText('250ms')).toBeInTheDocument(); // avg response time
+    // Response time is split: "250" and "ms" are separate elements
+    expect(screen.getByText('250')).toBeInTheDocument(); // avg response time value
+    expect(screen.getByText('ms')).toBeInTheDocument(); // avg response time unit
   });
 
   it('should show activity log section', () => {
@@ -201,7 +203,7 @@ describe('ProgressMonitor', () => {
     expect(screen.getByText('進行中')).toBeInTheDocument();
     expect(screen.getByText('成功')).toBeInTheDocument();
     expect(screen.getByText('失敗')).toBeInTheDocument();
-    expect(screen.getByText('平均回應')).toBeInTheDocument();
+    expect(screen.getByText('回應')).toBeInTheDocument(); // Label was shortened from '平均回應'
   });
 
   it('should update metrics when operation progresses', () => {
@@ -263,11 +265,11 @@ describe('ProgressMonitor', () => {
 
     const { container } = render(<ProgressMonitor operation={operation} progress={50} />);
 
-    // Check for stat cards using gradient backgrounds
-    expect(container.querySelector('.from-slate-500\\/10')).toBeInTheDocument();
-    expect(container.querySelector('.from-emerald-500\\/10')).toBeInTheDocument();
-    expect(container.querySelector('.from-red-500\\/10')).toBeInTheDocument();
-    expect(container.querySelector('.from-blue-500\\/10')).toBeInTheDocument();
+    // Check for stat cards using their background colors (updated from gradient classes)
+    expect(container.querySelector('.bg-slate-50')).toBeInTheDocument();
+    expect(container.querySelector('.bg-emerald-50')).toBeInTheDocument();
+    expect(container.querySelector('.bg-red-50')).toBeInTheDocument();
+    expect(container.querySelector('.bg-blue-50')).toBeInTheDocument();
   });
 
   it('should display zero values correctly', () => {
@@ -288,6 +290,7 @@ describe('ProgressMonitor', () => {
 
     const zeros = screen.getAllByText('0');
     expect(zeros.length).toBeGreaterThan(0);
-    expect(screen.getByText('0ms')).toBeInTheDocument();
+    // Response time "0" and "ms" are split across elements
+    expect(screen.getByText('ms')).toBeInTheDocument();
   });
 });

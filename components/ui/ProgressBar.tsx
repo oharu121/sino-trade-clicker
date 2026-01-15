@@ -21,6 +21,8 @@ export interface ProgressBarProps {
   variant?: 'primary' | 'success' | 'warning' | 'error';
   /** Size variant */
   size?: 'sm' | 'md' | 'lg';
+  /** Show animated pulse effect when active */
+  animated?: boolean;
 }
 
 /**
@@ -46,6 +48,7 @@ export function ProgressBar({
   showPercentage = true,
   variant = 'primary',
   size = 'md',
+  animated = true,
 }: ProgressBarProps) {
   // Clamp value between 0 and 100
   const clampedValue = Math.min(Math.max(value, 0), 100);
@@ -86,7 +89,7 @@ export function ProgressBar({
         <div className="flex justify-between mb-2">
           <span className="text-sm font-semibold text-slate-700 dark:text-slate-300">{label}</span>
           {showPercentage && (
-            <span className="text-sm font-bold text-slate-900 dark:text-slate-100">
+            <span className="text-sm font-bold text-slate-900 dark:text-slate-100 tabular-nums">
               {clampedValue}%
             </span>
           )}
@@ -94,26 +97,43 @@ export function ProgressBar({
       )}
 
       <div
-        className={`w-full bg-linear-to-r from-slate-200 to-slate-300 dark:from-slate-700 dark:to-slate-600 rounded-full overflow-hidden shadow-inner ${heightClasses[size]}`}
+        className={`relative w-full bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden ${heightClasses[size]}`}
         role="progressbar"
         aria-valuenow={clampedValue}
         aria-valuemin={0}
         aria-valuemax={100}
         aria-label={label || 'Progress'}
       >
+        {/* Background track with subtle inner shadow */}
+        <div className="absolute inset-0 shadow-inner rounded-full" />
+
+        {/* Progress fill */}
         <div
           className={`${colorClasses[variant]} ${heightClasses[size]} ${glowClasses[variant]} rounded-full transition-all duration-500 ease-out flex items-center justify-center relative overflow-hidden`}
           style={{ width: `${clampedValue}%` }}
         >
           {/* Animated shimmer effect */}
-          <div className="absolute inset-0 bg-linear-to-r from-transparent via-white/20 to-transparent animate-shimmer" style={{ backgroundSize: '200% 100%' }}></div>
+          {animated && clampedValue > 0 && clampedValue < 100 && (
+            <div
+              className="absolute inset-0 bg-linear-to-r from-transparent via-white/30 to-transparent animate-shimmer"
+              style={{ backgroundSize: '200% 100%' }}
+            />
+          )}
 
-          {showPercentage && size === 'lg' && clampedValue > 10 && (
-            <span className={`${textSizeClasses[size]} font-bold text-white drop-shadow-lg relative z-10`}>
+          {/* Gradient overlay for depth */}
+          <div className="absolute inset-0 bg-linear-to-b from-white/20 to-transparent" />
+
+          {showPercentage && size === 'lg' && clampedValue > 15 && (
+            <span className={`${textSizeClasses[size]} font-bold text-white drop-shadow-lg relative z-10 tabular-nums`}>
               {clampedValue}%
             </span>
           )}
         </div>
+
+        {/* Completion celebration effect */}
+        {clampedValue === 100 && (
+          <div className="absolute inset-0 bg-linear-to-r from-transparent via-white/40 to-transparent animate-pulse" />
+        )}
       </div>
     </div>
   );

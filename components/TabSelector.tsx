@@ -43,7 +43,7 @@ export function TabSelector({
   return (
     <div
       role="tablist"
-      className="flex gap-3 p-2 bg-linear-to-r from-slate-100 to-slate-200 dark:from-slate-800 dark:to-slate-900 rounded-2xl shadow-inner"
+      className="flex gap-2 p-1.5 bg-slate-100 dark:bg-slate-800 rounded-xl"
       aria-label="Article Channel Selection"
     >
       {channels.map((channel) => {
@@ -57,26 +57,33 @@ export function TabSelector({
             aria-controls={`panel-${channel.id}`}
             onClick={() => onChannelChange(channel.id)}
             className={`
+              relative
               flex-1
-              min-h-[48px]
-              px-5 py-3
-              rounded-xl
-              font-semibold
-              text-base
+              cursor-pointer
+              min-h-11
+              px-4 py-2.5
+              rounded-lg
+              font-medium
+              text-sm sm:text-base
               transition-all
-              duration-300
-              transform
+              duration-200
+              ease-out
               focus:outline-none
-              focus:ring-4
-              focus:ring-offset-2
+              focus:ring-2
               focus:ring-blue-500/50
+              focus:ring-offset-2
+              focus:ring-offset-slate-100
+              dark:focus:ring-offset-slate-800
               ${
                 isActive
-                  ? 'bg-linear-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-500/30 scale-105'
-                  : 'text-slate-700 dark:text-slate-300 hover:bg-white/60 dark:hover:bg-slate-700/60 hover:text-slate-900 dark:hover:text-slate-100 hover:shadow-md hover:scale-[1.02]'
+                  ? 'bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 shadow-sm'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-white/50 dark:hover:bg-slate-700/50'
               }
             `.trim().replace(/\s+/g, ' ')}
           >
+            {isActive && (
+              <span className="absolute bottom-1 left-1/2 -translate-x-1/2 w-6 h-0.5 bg-blue-600 dark:bg-blue-400 rounded-full" />
+            )}
             {channel.label}
           </button>
         );

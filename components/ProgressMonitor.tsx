@@ -214,19 +214,33 @@ export function ProgressMonitor({
     return null;
   }
 
+  // Status badge configuration
+  const statusConfig = {
+    running: { label: '運行中', color: 'bg-blue-100 text-blue-700 dark:bg-blue-900/50 dark:text-blue-300', dot: 'bg-blue-500 animate-pulse' },
+    paused: { label: '已暫停', color: 'bg-amber-100 text-amber-700 dark:bg-amber-900/50 dark:text-amber-300', dot: 'bg-amber-500' },
+    completed: { label: '已完成', color: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/50 dark:text-emerald-300', dot: 'bg-emerald-500' },
+    error: { label: '錯誤', color: 'bg-red-100 text-red-700 dark:bg-red-900/50 dark:text-red-300', dot: 'bg-red-500' },
+    idle: { label: '待機', color: 'bg-slate-100 text-slate-700 dark:bg-slate-900/50 dark:text-slate-300', dot: 'bg-slate-500' },
+  };
+
+  const currentStatus = statusConfig[operation.status];
+
   return (
-    <div ref={monitorRef} className="space-y-6 p-8 bg-linear-to-br from-white to-slate-50 dark:from-slate-800 dark:to-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl shadow-xl">
+    <div ref={monitorRef} className="space-y-6 p-6 sm:p-8 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl shadow-xl">
       {/* Progress Bar */}
-      <div className="space-y-3">
+      <div className="space-y-4">
         <div className="flex items-center justify-between">
           <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100 flex items-center gap-2">
-            <svg className="w-5 h-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-            </svg>
+            <div className="w-8 h-8 rounded-lg bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center">
+              <svg className="w-4 h-4 text-blue-600 dark:text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+              </svg>
+            </div>
             執行進度
           </h3>
-          <span className="text-sm font-medium text-slate-600 dark:text-slate-400">
-            {operation.status === 'running' ? '運行中' : operation.status === 'paused' ? '已暫停' : operation.status === 'completed' ? '已完成' : '錯誤'}
+          <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold ${currentStatus.color}`}>
+            <span className={`w-1.5 h-1.5 rounded-full ${currentStatus.dot}`} />
+            {currentStatus.label}
           </span>
         </div>
         <ProgressBar
@@ -261,44 +275,64 @@ export function ProgressMonitor({
       )}
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-        <div className="relative overflow-hidden group">
-          <div className="absolute inset-0 bg-linear-to-br from-slate-500/10 to-slate-600/10 rounded-xl"></div>
-          <div className="relative text-center p-5 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-xl shadow-md border border-slate-200 dark:border-slate-700 transition-all duration-300 group-hover:shadow-lg group-hover:scale-105">
-            <div className="text-3xl font-extrabold bg-linear-to-br from-slate-600 to-slate-800 dark:from-slate-300 dark:to-slate-100 bg-clip-text text-transparent">
-              {operation.metrics.current}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
+        {/* Current Progress */}
+        <div className="group p-4 bg-slate-50 dark:bg-slate-700/50 rounded-xl border border-slate-200 dark:border-slate-600 transition-all duration-200 hover:shadow-md hover:border-slate-300 dark:hover:border-slate-500">
+          <div className="flex items-center gap-2 mb-2">
+            <div className="w-6 h-6 rounded-md bg-slate-200 dark:bg-slate-600 flex items-center justify-center">
+              <svg className="w-3.5 h-3.5 text-slate-600 dark:text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+              </svg>
             </div>
-            <div className="text-xs font-semibold text-slate-600 dark:text-slate-400 mt-2 uppercase tracking-wide">進行中</div>
+            <span className="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wide">進行中</span>
+          </div>
+          <div className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-slate-100 tabular-nums">
+            {operation.metrics.current}
           </div>
         </div>
 
-        <div className="relative overflow-hidden group">
-          <div className="absolute inset-0 bg-linear-to-br from-emerald-500/10 to-green-600/10 rounded-xl"></div>
-          <div className="relative text-center p-5 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-xl shadow-md border border-emerald-200 dark:border-emerald-800 transition-all duration-300 group-hover:shadow-lg group-hover:scale-105">
-            <div className="text-3xl font-extrabold bg-linear-to-br from-emerald-600 to-green-700 dark:from-emerald-400 dark:to-green-400 bg-clip-text text-transparent">
-              {operation.metrics.success}
+        {/* Success Count */}
+        <div className="group p-4 bg-emerald-50 dark:bg-emerald-900/20 rounded-xl border border-emerald-200 dark:border-emerald-800 transition-all duration-200 hover:shadow-md hover:border-emerald-300 dark:hover:border-emerald-700">
+          <div className="flex items-center gap-2 mb-2">
+            <div className="w-6 h-6 rounded-md bg-emerald-200 dark:bg-emerald-800 flex items-center justify-center">
+              <svg className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              </svg>
             </div>
-            <div className="text-xs font-semibold text-emerald-700 dark:text-emerald-400 mt-2 uppercase tracking-wide">成功</div>
+            <span className="text-xs font-medium text-emerald-600 dark:text-emerald-400 uppercase tracking-wide">成功</span>
+          </div>
+          <div className="text-2xl sm:text-3xl font-bold text-emerald-700 dark:text-emerald-300 tabular-nums">
+            {operation.metrics.success}
           </div>
         </div>
 
-        <div className="relative overflow-hidden group">
-          <div className="absolute inset-0 bg-linear-to-br from-red-500/10 to-rose-600/10 rounded-xl"></div>
-          <div className="relative text-center p-5 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-xl shadow-md border border-red-200 dark:border-red-800 transition-all duration-300 group-hover:shadow-lg group-hover:scale-105">
-            <div className="text-3xl font-extrabold bg-linear-to-br from-red-600 to-rose-700 dark:from-red-400 dark:to-rose-400 bg-clip-text text-transparent">
-              {operation.metrics.failed}
+        {/* Failed Count */}
+        <div className="group p-4 bg-red-50 dark:bg-red-900/20 rounded-xl border border-red-200 dark:border-red-800 transition-all duration-200 hover:shadow-md hover:border-red-300 dark:hover:border-red-700">
+          <div className="flex items-center gap-2 mb-2">
+            <div className="w-6 h-6 rounded-md bg-red-200 dark:bg-red-800 flex items-center justify-center">
+              <svg className="w-3.5 h-3.5 text-red-600 dark:text-red-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
             </div>
-            <div className="text-xs font-semibold text-red-700 dark:text-red-400 mt-2 uppercase tracking-wide">失敗</div>
+            <span className="text-xs font-medium text-red-600 dark:text-red-400 uppercase tracking-wide">失敗</span>
+          </div>
+          <div className="text-2xl sm:text-3xl font-bold text-red-700 dark:text-red-300 tabular-nums">
+            {operation.metrics.failed}
           </div>
         </div>
 
-        <div className="relative overflow-hidden group">
-          <div className="absolute inset-0 bg-linear-to-br from-blue-500/10 to-indigo-600/10 rounded-xl"></div>
-          <div className="relative text-center p-5 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-xl shadow-md border border-blue-200 dark:border-blue-800 transition-all duration-300 group-hover:shadow-lg group-hover:scale-105">
-            <div className="text-3xl font-extrabold bg-linear-to-br from-blue-600 to-indigo-700 dark:from-blue-400 dark:to-indigo-400 bg-clip-text text-transparent">
-              {operation.metrics.averageResponseTime}ms
+        {/* Average Response Time */}
+        <div className="group p-4 bg-blue-50 dark:bg-blue-900/20 rounded-xl border border-blue-200 dark:border-blue-800 transition-all duration-200 hover:shadow-md hover:border-blue-300 dark:hover:border-blue-700">
+          <div className="flex items-center gap-2 mb-2">
+            <div className="w-6 h-6 rounded-md bg-blue-200 dark:bg-blue-800 flex items-center justify-center">
+              <svg className="w-3.5 h-3.5 text-blue-600 dark:text-blue-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
             </div>
-            <div className="text-xs font-semibold text-blue-700 dark:text-blue-400 mt-2 uppercase tracking-wide">平均回應</div>
+            <span className="text-xs font-medium text-blue-600 dark:text-blue-400 uppercase tracking-wide">回應</span>
+          </div>
+          <div className="text-2xl sm:text-3xl font-bold text-blue-700 dark:text-blue-300 tabular-nums">
+            {operation.metrics.averageResponseTime}<span className="text-sm font-medium ml-0.5">ms</span>
           </div>
         </div>
       </div>
@@ -306,15 +340,17 @@ export function ProgressMonitor({
       {/* Activity Log */}
       <div className="mt-6 space-y-3">
         <div className="flex items-center gap-2">
-          <svg className="w-5 h-5 text-slate-600 dark:text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-          </svg>
+          <div className="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-700 flex items-center justify-center">
+            <svg className="w-4 h-4 text-slate-600 dark:text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+          </div>
           <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">活動記錄</h3>
-          <span className="ml-auto text-xs font-medium text-slate-500 dark:text-slate-400 bg-slate-200 dark:bg-slate-700 px-2 py-1 rounded-full">
+          <span className="ml-auto inline-flex items-center text-xs font-medium text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-700 px-2.5 py-1 rounded-full tabular-nums">
             {activityLog.length} 條記錄
           </span>
         </div>
-        <div className="max-h-80 overflow-y-auto space-y-2 bg-linear-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-950 rounded-xl p-4 border border-slate-200 dark:border-slate-700 shadow-inner">
+        <div className="max-h-72 overflow-y-auto space-y-2 bg-slate-50 dark:bg-slate-900/50 rounded-xl p-3 border border-slate-200 dark:border-slate-700">
           {activityLog.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-12">
               <svg className="w-16 h-16 text-slate-300 dark:text-slate-600 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">

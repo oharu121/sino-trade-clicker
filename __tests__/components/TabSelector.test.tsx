@@ -108,8 +108,8 @@ describe('TabSelector', () => {
 
     const macroTab = screen.getByRole('tab', { name: '深談總經' });
 
-    // Check for min-h-[48px] class (touch target)
-    expect(macroTab.className).toContain('min-h-[48px]');
+    // Check for min-h-11 class (44px touch target - Tailwind spacing scale)
+    expect(macroTab.className).toContain('min-h-11');
   });
 
   it('should switch active state correctly', async () => {

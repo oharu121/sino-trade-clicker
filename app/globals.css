@@ -160,7 +160,7 @@ html {
 @keyframes fadeIn {
   from {
     opacity: 0;
-    transform: translateY(-10px);
+    transform: translateY(-8px);
   }
   to {
     opacity: 1;
@@ -171,18 +171,18 @@ html {
 @keyframes slideIn {
   from {
     opacity: 0;
-    transform: translateX(-20px);
+    transform: translateY(10px);
   }
   to {
     opacity: 1;
-    transform: translateX(0);
+    transform: translateY(0);
   }
 }
 
 @keyframes scaleIn {
   from {
     opacity: 0;
-    transform: scale(0.95);
+    transform: scale(0.96);
   }
   to {
     opacity: 1;
@@ -210,21 +210,64 @@ html {
   }
 }
 
+@keyframes slideInFromTop {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 /* Utility Classes */
 .animate-fade-in {
-  animation: fadeIn 0.5s ease-out;
+  animation: fadeIn 0.4s ease-out both;
 }
 
 .animate-slide-in {
-  animation: slideIn 0.4s ease-out;
+  animation: slideIn 0.35s ease-out both;
 }
 
 .animate-scale-in {
-  animation: scaleIn 0.3s ease-out;
+  animation: scaleIn 0.25s ease-out both;
 }
 
 .animate-shimmer {
   animation: shimmer 2s infinite linear;
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+/* Tailwind CSS animate-in utilities for dropdown animations */
+.animate-in {
+  animation-duration: 150ms;
+  animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+  animation-fill-mode: both;
+}
+
+.fade-in {
+  animation-name: fadeIn;
+}
+
+.slide-in-from-top-2 {
+  animation-name: slideInFromTop;
+}
+
+.duration-200 {
+  animation-duration: 200ms;
 }
 
 .glass-effect {
@@ -249,6 +292,11 @@ html {
   box-shadow: var(--shadow-lg);
 }
 
+/* Tabular numbers for consistent width in stats */
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
 /* Loading State */
 .skeleton-shimmer {
   background: linear-gradient(
@@ -259,4 +307,27 @@ html {
   );
   background-size: 1000px 100%;
   animation: shimmer 2s infinite linear;
+}
+
+/* Improved focus states */
+.focus-ring {
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+}
+
+.focus-ring:focus-visible {
+  outline-color: var(--brand-primary);
+}
+
+/* Smooth transitions for interactive elements */
+.interactive {
+  transition: all 0.2s ease-out;
+}
+
+.interactive:hover {
+  transform: translateY(-1px);
+}
+
+.interactive:active {
+  transform: translateY(0);
 }

@@ -189,6 +189,7 @@ export function Select({
           relative
           min-h-12
           w-full
+          cursor-pointer
           px-4 py-3
           rounded-xl
           border-2
@@ -248,7 +249,7 @@ export function Select({
 
       {isOpen && !loading && (
         <div
-          className="absolute z-50 w-full mt-2 bg-white dark:bg-slate-800 border-2 border-slate-300 dark:border-slate-600 rounded-xl shadow-2xl max-h-72 overflow-hidden backdrop-blur-sm"
+          className="absolute z-50 w-full mt-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 rounded-xl shadow-2xl max-h-72 overflow-hidden backdrop-blur-sm animate-in fade-in slide-in-from-top-2 duration-200"
           role="listbox"
         >
           {searchable && (
@@ -276,10 +277,13 @@ export function Select({
           <ul className="overflow-y-auto max-h-56 py-1">
             {filteredOptions.length === 0 ? (
               <li className="px-4 py-8 text-slate-500 dark:text-slate-400 text-center text-sm">
-                <svg className="w-12 h-12 mx-auto mb-2 opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                無符合選項
+                <div className="w-16 h-16 mx-auto mb-3 rounded-full bg-slate-100 dark:bg-slate-700 flex items-center justify-center">
+                  <svg className="w-8 h-8 text-slate-400 dark:text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                  </svg>
+                </div>
+                <p className="font-medium text-slate-600 dark:text-slate-400">無符合選項</p>
+                <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">請嘗試其他關鍵字</p>
               </li>
             ) : (
               filteredOptions.map((option, index) => (
