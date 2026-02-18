@@ -1,18 +1,19 @@
 {
   "permissions": {
     "allow": [
-      "Bash(npm install:*)",
-      "Bash(npm test:*)",
-      "Bash(npm run build:*)",
+      "Bash(pnpm install:*)",
+      "Bash(pnpm test:*)",
+      "Bash(pnpm run build:*)",
       "Bash(dir:*)",
       "Bash(find:*)",
-      "Bash(npm run lint)",
-      "Bash(npm run typecheck:*)",
+      "Bash(pnpm run lint)",
+      "Bash(pnpm run typecheck:*)",
       "Skill(ui-ux-pro-max)",
       "Skill(ui-ux-pro-max:*)",
       "Bash(tree:*)",
       "Bash(python:*)",
-      "Bash(set:*)"
+      "Bash(set:*)",
+      "Bash(test:*)"
     ],
     "deny": [],
     "ask": []

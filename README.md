@@ -62,8 +62,8 @@
 ## 🚀 Getting Started
 
 ### Prerequisites
-- Node.js 18+ or compatible runtime
-- npm, yarn, pnpm, or bun package manager
+- Node.js 20+
+- [pnpm](https://pnpm.io/installation)
 
 ### Installation
 
@@ -75,24 +75,12 @@
 
 2. **Install dependencies**
    ```bash
-   npm install
-   # or
-   yarn install
-   # or
    pnpm install
-   # or
-   bun install
    ```
 
 3. **Run the development server**
    ```bash
-   npm run dev
-   # or
-   yarn dev
-   # or
    pnpm dev
-   # or
-   bun dev
    ```
 
 4. **Open your browser**
@@ -101,15 +89,15 @@
 ### Build for Production
 
 ```bash
-npm run build
-npm start
+pnpm build
+pnpm start
 ```
 
 ### Run Tests & Linting
 
 ```bash
-npm test
-npm run lint
+pnpm test
+pnpm lint
 ```
 
 ---
