@@ -21,7 +21,7 @@
     "react-dom": "19.2.7"
   },
   "devDependencies": {
-    "@playwright/test": "^1.61.0",
+    "@playwright/test": "^1.61.1",
     "@tailwindcss/node": "^4.3.1",
     "@tailwindcss/postcss": "^4.3.1",
     "@tailwindcss/upgrade": "^4.3.1",
