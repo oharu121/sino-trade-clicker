@@ -18,7 +18,7 @@
 ## ✨ Features
 
 ### 🎯 Core Functionality
-- **Multi-Channel Support** - Manage articles across different channels (深談總經, 產業大勢, 川普專題)
+- **Multi-Channel Support** - Manage articles across different channels (深談總經, 川普專題) plus a custom URL mode for arbitrary targets
 - **Intelligent Article Search** - Real-time searchable dropdown with keyboard navigation
 - **Automated View Boosting** - Configurable view count automation with interval control
 - **Real-Time Progress Monitoring** - Live metrics, stats, and activity logging

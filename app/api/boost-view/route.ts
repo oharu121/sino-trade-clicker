@@ -63,13 +63,13 @@ export async function POST(request: NextRequest) {
     const { url, articleTitle, userAgent } = body;
 
     // Validate request
-    if (!url || !articleTitle) {
+    if (!url) {
       return NextResponse.json(
         {
           success: false,
           statusCode: 400,
           responseTime: Date.now() - startTime,
-          error: "Missing required fields: url and articleTitle",
+          error: "Missing required field: url",
         } as BoostViewResponse,
         { status: 400 }
       );
@@ -117,10 +117,10 @@ export async function POST(request: NextRequest) {
       : '';
 
     // Check if article title is in the document title
-    // Using normalized comparison to handle encoding differences:
-    // - &amp; vs & vs \u0026
-    // - Multiple whitespace variations
-    const titleFound = normalizedDocumentTitle.includes(normalizedExpectedTitle);
+    // Skip verification when no articleTitle provided (custom URL mode)
+    const titleFound = articleTitle
+      ? normalizedDocumentTitle.includes(normalizedExpectedTitle)
+      : true;
 
     // Consider it successful if:
     // 1. Status is 2xx

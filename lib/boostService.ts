@@ -162,8 +162,8 @@ export function startBoost(config: BoostConfig, callbacks: BoostCallbacks = {}):
   const { article, count, interval } = config;
   const { onProgress, onComplete, onAutoStop } = callbacks;
 
-  // Build article URL with channel ID for correct path
-  const articleUrl = buildArticleUrl(article, article.channelId);
+  // Use pre-set URL (custom URL mode) or build from article data
+  const articleUrl = article.url || buildArticleUrl(article, article.channelId);
 
   // State tracking
   let currentIndex = 0;

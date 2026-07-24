@@ -40,6 +40,13 @@ export const CHANNELS: Record<string, ArticleChannel> = {
     defaultInterval: 300,
     titleFilter: '【川普政策整理】', // Client-side filter
   },
+  CUSTOM_URL: {
+    id: 'custom-url',
+    label: '自訂網址',
+    channelId: '',
+    defaultCount: 200,
+    defaultInterval: 300,
+  },
 } as const;
 
 /**
@@ -48,6 +55,7 @@ export const CHANNELS: Record<string, ArticleChannel> = {
 export const CHANNEL_LIST: ArticleChannel[] = [
   CHANNELS.MACRO_EXPERT,
   CHANNELS.TRUMP_TOPIC,
+  CHANNELS.CUSTOM_URL,
 ];
 
 /**

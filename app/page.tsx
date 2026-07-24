@@ -36,6 +36,9 @@ export default function Home() {
     CHANNELS.MACRO_EXPERT.id
   );
   const [selectedArticle, setSelectedArticle] = useState<Article | null>(null);
+  const [customUrl, setCustomUrl] = useState<string>('');
+
+  const isCustomUrl = selectedChannelId === 'custom-url';
 
   // Article cache: { channelId: { articles, timestamp } }
   const [articleCache, setArticleCache] = useState<Record<string, CacheEntry>>({});
@@ -57,6 +60,13 @@ export default function Home() {
    */
   const fetchArticles = useCallback(async () => {
     if (!currentChannel) return;
+
+    if (isCustomUrl) {
+      setArticles([]);
+      setLoading(false);
+      setError(null);
+      return;
+    }
 
     const cacheKey = `${currentChannel.channelId}-${currentChannel.titleFilter || ''}`;
     const cached = articleCache[cacheKey];
@@ -102,7 +112,7 @@ export default function Home() {
     } finally {
       setLoading(false);
     }
-  }, [currentChannel, articleCache]);
+  }, [currentChannel, articleCache, isCustomUrl]);
 
   // Fetch articles when channel changes
   useEffect(() => {
@@ -117,6 +127,7 @@ export default function Home() {
     if (operation.status === 'idle') {
       setSelectedChannelId(channelId);
       setSelectedArticle(null);
+      setCustomUrl('');
     }
   };
 
@@ -126,6 +137,23 @@ export default function Home() {
   const handleArticleSelect = (article: Article | null) => {
     if (operation.status === 'idle') {
       setSelectedArticle(article);
+    }
+  };
+
+  /**
+   * Handle custom URL input
+   */
+  const handleCustomUrlChange = (url: string) => {
+    setCustomUrl(url);
+    try {
+      const parsed = new URL(url);
+      if (parsed.protocol === 'http:' || parsed.protocol === 'https:') {
+        setSelectedArticle({ _id: 'custom', title: '', url });
+      } else {
+        setSelectedArticle(null);
+      }
+    } catch {
+      setSelectedArticle(null);
     }
   };
 
@@ -171,18 +199,43 @@ export default function Home() {
             />
           </section>
 
-          {/* Article Selector */}
+          {/* Article Selector / Custom URL Input */}
           <section className="relative z-10 animate-slide-in" style={{ animationDelay: '0.05s' }}>
             <div className="p-4 sm:p-5 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
-              <ArticleSelector
-                channelId={currentChannel?.channelId || ''}
-                articles={articles}
-                loading={loading}
-                error={error}
-                selectedArticle={selectedArticle}
-                onArticleSelect={handleArticleSelect}
-                autoFocus
-              />
+              {isCustomUrl ? (
+                <div>
+                  <label
+                    htmlFor="custom-url"
+                    className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2"
+                  >
+                    目標網址
+                  </label>
+                  <input
+                    id="custom-url"
+                    type="url"
+                    value={customUrl}
+                    onChange={(e) => handleCustomUrlChange(e.target.value)}
+                    placeholder="https://..."
+                    disabled={operation.status !== 'idle'}
+                    className="w-full px-3 py-2.5 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 text-sm placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                  />
+                  {customUrl && !selectedArticle && (
+                    <p className="mt-1.5 text-xs text-red-500 dark:text-red-400">
+                      請輸入有效的網址（以 http:// 或 https:// 開頭）
+                    </p>
+                  )}
+                </div>
+              ) : (
+                <ArticleSelector
+                  channelId={currentChannel?.channelId || ''}
+                  articles={articles}
+                  loading={loading}
+                  error={error}
+                  selectedArticle={selectedArticle}
+                  onArticleSelect={handleArticleSelect}
+                  autoFocus
+                />
+              )}
             </div>
           </section>
 
@@ -197,10 +250,10 @@ export default function Home() {
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-xs font-medium text-blue-600 dark:text-blue-400 mb-0.5">
-                    已選擇文章
+                    {isCustomUrl ? '目標網址' : '已選擇文章'}
                   </p>
                   <p className="text-sm font-medium text-slate-900 dark:text-slate-100 truncate">
-                    {selectedArticle.title}
+                    {isCustomUrl ? selectedArticle.url : selectedArticle.title}
                   </p>
                 </div>
               </div>

@@ -28,10 +28,10 @@ export interface Article {
  */
 export interface ArticleChannel {
   /** Internal channel identifier */
-  id: 'macro-expert' | 'stock-talk' | 'trump-topic';
+  id: 'macro-expert' | 'stock-talk' | 'trump-topic' | 'custom-url';
 
   /** Display name in Chinese for tab label */
-  label: '深談總經' | '股市熱話' | '川普專題';
+  label: '深談總經' | '股市熱話' | '川普專題' | '自訂網址';
 
   /** GraphQL channel ID for API query */
   channelId: string;

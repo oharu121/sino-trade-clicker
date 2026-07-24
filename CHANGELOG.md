@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.0] - 2026-07-24
+
+### Added
+
+- **Custom URL tab** - New "自訂網址" tab allows boosting views on any arbitrary URL, not just Sino Trade articles
+- Custom URL input with validation (http/https only)
+- Relaxed API title verification for custom URL mode (skip title matching, check 2xx + no WAF only)
+- Synthetic article creation from user-entered URL, reusing existing `Article.url` field
+
 ## [1.0.1] - 2026-01-16
 
 ### Fixed
