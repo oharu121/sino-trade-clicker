@@ -116,6 +116,7 @@ export default function Home() {
 
   // Fetch articles when channel changes
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- async data fetch, not a cascading render
     fetchArticles();
   }, [fetchArticles]);
 

@@ -116,6 +116,7 @@ export function useArticles(channelId: string, titleFilter?: string): UseArticle
 
   // Fetch articles when channelId changes
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- async data fetch, not a cascading render
     fetchArticles();
   }, [fetchArticles]);
 
