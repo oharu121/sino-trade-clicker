@@ -14,7 +14,9 @@
       "Bash(python:*)",
       "Bash(set:*)",
       "Bash(test:*)",
-      "Bash(pnpm view:*)"
+      "Bash(pnpm view:*)",
+      "Bash(gh issue create --title \"Add custom URL tab for arbitrary click targets\" --label \"enhancement\" --assignee \"@me\" --milestone \"v1.1.0\" --body-file .release-tmp/issue-body.md)",
+      "Bash(gh release create v1.1.0 --title \"v1.1.0 - Add custom URL tab for arbitrary click targets\" --notes-file .release-tmp/release-notes.md)"
     ],
     "deny": [],
     "ask": []
